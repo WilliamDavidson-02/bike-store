@@ -3,29 +3,96 @@ import { useState } from "react"
 import useClickOutside from "../../lib/hooks/useClickOutside"
 import LocalLink from "../common/LocalLink"
 
-const Aside = styled.aside`
+const Aside = styled.aside<{ isOpen: boolean }>`
   position: absolute;
   inset: 0;
   height: 100vh;
+  width: 100%;
   max-width: 500px;
-  padding: 1rem;
+  padding: ${({ theme }) => theme.padding.xl};
+  left: 100%;
+  transform: ${({ isOpen }) => (isOpen ? "translateX(-100%)" : "")};
+  transition: transform 0.25s;
 `
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: ${({ theme }) => theme.colors.blueDark};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  height: 100%;
+  color: ${({ theme }) => theme.colors.white};
+  padding: ${({ theme }) => theme.padding.xxl};
+`
+
+const Ul = styled.ul`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
+
+const Li = styled.li<{ hovering: boolean | null }>`
+  list-style-type: none;
+  font-size: 2rem;
+  width: 100%;
+  text-align: end;
+  position: relative;
+  overflow-x: hidden;
+  transition: 0.2s;
+  color: ${({ hovering, theme }) =>
+    hovering ? theme.colors.blueLight : theme.colors.white};
+
+  & > a {
+    width: 100%;
+    display: block;
+    padding: ${({ theme }) => theme.padding.lg};
+  }
+`
+
+const SideMenuItems = {
+  Home: "/",
+  Store: "/store",
+  Account: "/account",
+  Cart: "/cart",
+}
 
 const SideMenu = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const ref = useClickOutside(() => {
-    if (isOpen) setIsOpen(false)
-  })
+  const [hoveredLink, setHoveredLink] = useState<
+    keyof typeof SideMenuItems | null
+  >(null)
+
+  const handleClose = () => {
+    setIsOpen(false)
+    setHoveredLink(null)
+  }
+
+  const ref = useClickOutside(() => isOpen && handleClose())
 
   return (
     <>
       <button onClick={() => setIsOpen(true)}>Menu</button>
-      <Aside ref={ref}>
-        <ul>
-          <li>
-            <LocalLink to="/">Home</LocalLink>
-          </li>
-        </ul>
+      <Aside isOpen={isOpen} ref={ref}>
+        <Container>
+          <button onClick={handleClose}>Close</button>
+          <Ul>
+            {Object.entries(SideMenuItems).map(([name, path]) => (
+              <Li
+                hovering={hoveredLink && hoveredLink !== name}
+                onMouseEnter={() =>
+                  setHoveredLink(name as keyof typeof SideMenuItems)
+                }
+                onMouseLeave={() => setHoveredLink(null)}
+                onClick={handleClose}
+                key={name}
+              >
+                <LocalLink to={path}>{name}</LocalLink>
+              </Li>
+            ))}
+          </Ul>
+        </Container>
       </Aside>
     </>
   )

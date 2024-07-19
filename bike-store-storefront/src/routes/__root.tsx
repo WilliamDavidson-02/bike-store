@@ -10,7 +10,7 @@ import Nav from "../components/layout/Nav"
 import { Region } from "@medusajs/medusa"
 import { getRegionMapFromLocalStorage } from "../lib/utils"
 import LocalLink from "../components/common/LocalLink"
-import { css, Global } from "@emotion/react"
+import GlobalTheme from "../components/GlobalTheme"
 
 const BASE_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL
 const DEFAULT_REGION: string = import.meta.env.VITE_DEFAULT_REGION ?? "us"
@@ -26,21 +26,10 @@ export const Route = createRootRoute({
       queryClientProviderProps={{ client: queryClient }}
       baseUrl={BASE_URL}
     >
-      <Global
-        styles={css`
-          * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Inter", sans-serif;
-            font-optical-sizing: auto;
-            font-style: normal;
-            font-variation-settings: "slnt" 0;
-          }
-        `}
-      />
-      <Nav />
-      <Outlet />
+      <GlobalTheme>
+        <Nav />
+        <Outlet />
+      </GlobalTheme>
     </MedusaProvider>
   ),
   notFoundComponent: () => {
