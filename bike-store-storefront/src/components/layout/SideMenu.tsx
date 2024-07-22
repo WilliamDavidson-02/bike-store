@@ -2,6 +2,7 @@ import styled from "@emotion/styled"
 import { useState } from "react"
 import useClickOutside from "../../lib/hooks/useClickOutside"
 import LocalLink from "../common/LocalLink"
+import { X } from "lucide-react"
 
 const Aside = styled.aside<{ isOpen: boolean }>`
   position: absolute;
@@ -19,10 +20,10 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background-color: ${({ theme }) => theme.colors.blueDark};
+  background-color: ${({ theme }) => theme.colors.background.bgUiBgInteractive};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   height: 100%;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.foreground.textUiFgOnColor};
   padding: ${({ theme }) => theme.padding.xxl};
 `
 
@@ -42,7 +43,7 @@ const Li = styled.li<{ hovering: boolean | null }>`
   overflow-x: hidden;
   transition: 0.2s;
   color: ${({ hovering, theme }) =>
-    hovering ? theme.colors.blueLight : theme.colors.white};
+    hovering ? theme.colors.foreground.textUiFgInteractiveHover : "inherit"};
 
   & > a {
     width: 100%;
@@ -58,11 +59,11 @@ const SideMenuItems = {
   Cart: "/cart",
 }
 
+type HoverType = keyof typeof SideMenuItems | null
+
 const SideMenu = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const [hoveredLink, setHoveredLink] = useState<
-    keyof typeof SideMenuItems | null
-  >(null)
+  const [hoveredLink, setHoveredLink] = useState<HoverType>(null)
 
   const handleClose = () => {
     setIsOpen(false)
@@ -76,7 +77,7 @@ const SideMenu = () => {
       <button onClick={() => setIsOpen(true)}>Menu</button>
       <Aside isOpen={isOpen} ref={ref}>
         <Container>
-          <button onClick={handleClose}>Close</button>
+          <X onClick={handleClose} />
           <Ul>
             {Object.entries(SideMenuItems).map(([name, path]) => (
               <Li
