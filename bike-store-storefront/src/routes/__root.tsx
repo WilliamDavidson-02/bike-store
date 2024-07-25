@@ -6,11 +6,11 @@ import {
   Outlet,
   redirect,
 } from "@tanstack/react-router"
-import Nav from "../components/layout/Nav"
+import Nav from "@components/Menu/Nav"
 import { Region } from "@medusajs/medusa"
-import { getRegionMapFromLocalStorage } from "../lib/utils"
-import LocalLink from "../components/common/LocalLink"
-import GlobalTheme from "../components/GlobalTheme"
+import LocalLink from "@components/common/LocalLink"
+import GlobalTheme from "@components/GlobalTheme"
+import { getRegionMapFromLocalStorage } from "@lib/utils"
 
 const BASE_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL
 const DEFAULT_REGION: string = import.meta.env.VITE_DEFAULT_REGION ?? "us"

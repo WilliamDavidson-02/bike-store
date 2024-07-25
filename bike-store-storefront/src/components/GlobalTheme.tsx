@@ -22,7 +22,7 @@ export const globalTheme = {
       bgUiBgHighlight: "rgba(239, 246, 255, 1)",
       bgUiBgHighlightHover: "rgba(219, 234, 254, 1)",
       bgUiBgInteractive: "rgba(59, 130, 246, 1)",
-      bgUiBgOverlay: "rgba(9, 9, 11, 0.4)",
+      bgUiBgOverlay: "rgba(9, 9, 11, 0.3)",
       bgUiBgSubtle: "rgba(250, 250, 250, 1)",
       bgUiBgSubtleHover: "rgba(244, 244, 245, 1)",
       bgUiBgSubtlePressed: "rgba(228, 228, 231, 1)",
@@ -59,9 +59,8 @@ export const globalTheme = {
       bgUiButtonNeutral: "rgba(255, 255, 255, 1)",
       bgUiButtonNeutralHover: "rgba(244, 244, 245, 1)",
       bgUiButtonNeutralPressed: "rgba(228, 228, 231, 1)",
-      bgUiButtonTransparent: "rgba(255, 255, 255, 0.01)",
-      bgUiButtonTransparentHover: "rgba(244, 244, 245, 1)",
-      bgUiButtonTransparentPressed: "rgba(228, 228, 231, 1)",
+      bgUiButtonInteractive: "rgba(59, 130, 246, 1)",
+      bgUiButtonInteractiveHover: "rgba(37, 99, 235, 1)",
     },
     tag: {
       bgUiTagBlueBg: "rgba(219, 234, 254, 1)",
@@ -106,7 +105,7 @@ export const globalTheme = {
     xxxl: "24px",
     full: "100vmax",
   },
-  padding: {
+  spacing: {
     xs: "2px",
     sm: "4px",
     md: "6px",
@@ -134,11 +133,16 @@ const GlobalTheme: FC<GlobalThemeProps> = ({ children }) => {
 
           body {
             background-color: ${globalTheme.colors.background.bgUiBgBase};
+            overflow-x: hidden;
           }
 
           a {
             text-decoration: none;
             color: inherit;
+          }
+
+          button {
+            cursor: pointer;
           }
         `}
       />
