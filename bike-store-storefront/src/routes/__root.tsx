@@ -2,13 +2,13 @@ import { MedusaProvider } from "medusa-react"
 import { QueryClient } from "@tanstack/react-query"
 import {
   createRootRoute,
+  Link,
   notFound,
   Outlet,
   redirect,
 } from "@tanstack/react-router"
 import Nav from "@components/Menu/Nav"
 import { Region } from "@medusajs/medusa"
-import LocalLink from "@components/common/LocalLink"
 import GlobalTheme from "@components/GlobalTheme"
 import { getRegionMapFromLocalStorage } from "@lib/utils"
 
@@ -36,7 +36,7 @@ export const Route = createRootRoute({
     return (
       <div>
         <p>Not found!</p>
-        <LocalLink to="/">Go home</LocalLink>
+        <Link to="/">Go home</Link>
       </div>
     )
   },

@@ -71,7 +71,7 @@ const Line = styled.div<{ isOpen: IsOpenType }>`
   width: 100%;
   height: 2px;
   border-radius: 100vmax;
-  background-color: ${({ theme }) => theme.colors.foreground.textUiFgSubtle};
+  background-color: ${({ theme }) => theme.colors.foreground.textUiFgBase};
 
   transform-origin: center;
 

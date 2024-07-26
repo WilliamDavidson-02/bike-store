@@ -18,6 +18,7 @@ import { Route as rootRoute } from './routes/__root'
 
 const IndexLazyImport = createFileRoute('/')()
 const CountryCodeIndexLazyImport = createFileRoute('/$countryCode/')()
+const CountryCodeCartIndexLazyImport = createFileRoute('/$countryCode/cart/')()
 
 // Create/Update Routes
 
@@ -31,6 +32,13 @@ const CountryCodeIndexLazyRoute = CountryCodeIndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/$countryCode/index.lazy').then((d) => d.Route),
+)
+
+const CountryCodeCartIndexLazyRoute = CountryCodeCartIndexLazyImport.update({
+  path: '/$countryCode/cart/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/$countryCode/cart/index.lazy').then((d) => d.Route),
 )
 
 // Populate the FileRoutesByPath interface
@@ -51,6 +59,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CountryCodeIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/$countryCode/cart/': {
+      id: '/$countryCode/cart/'
+      path: '/$countryCode/cart'
+      fullPath: '/$countryCode/cart'
+      preLoaderRoute: typeof CountryCodeCartIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -59,6 +74,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   CountryCodeIndexLazyRoute,
+  CountryCodeCartIndexLazyRoute,
 })
 
 /* prettier-ignore-end */
@@ -70,7 +86,8 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/$countryCode/"
+        "/$countryCode/",
+        "/$countryCode/cart/"
       ]
     },
     "/": {
@@ -78,6 +95,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/$countryCode/": {
       "filePath": "$countryCode/index.lazy.tsx"
+    },
+    "/$countryCode/cart/": {
+      "filePath": "$countryCode/cart/index.lazy.tsx"
     }
   }
 }

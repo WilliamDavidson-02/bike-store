@@ -2,6 +2,8 @@ import { useState } from "react"
 import styled from "@emotion/styled"
 import Hamburger from "./Hamburger"
 import SideMenu from "./SideMenu"
+import { Search, ShoppingBag } from "lucide-react"
+import { Link, useParams } from "@tanstack/react-router"
 
 export type IsOpenType = boolean | null
 
@@ -35,13 +37,21 @@ const Container = styled.div`
   max-width: 1024px;
   margin: 0 auto;
 
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  align-content: center;
-  justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.xxl};
+`
+
+const IconsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xxl};
+  color: ${({ theme }) => theme.colors.foreground.textUiFgBase};
 `
 
 const Nav = () => {
+  const { countryCode } = useParams({ strict: false })
   const [isOpen, setIsOpen] = useState<IsOpenType>(null)
 
   // const { product_categories, isLoading } = useProductCategories()
@@ -52,10 +62,22 @@ const Nav = () => {
     <Header>
       <StyledNav>
         <Container>
-          <Hamburger
-            isOpen={isOpen}
-            onClick={() => setIsOpen((prev) => !prev)}
-          />
+          <Link to="/$countryCode" params={{ countryCode: countryCode ?? "" }}>
+            <img height={32} src="/bike_store_logo.svg" alt="Bike store logo" />
+          </Link>
+          <IconsContainer>
+            <Search strokeWidth={2} />
+            <Link
+              to="/$countryCode/cart"
+              params={{ countryCode: countryCode ?? "" }}
+            >
+              <ShoppingBag strokeWidth={2} />
+            </Link>
+            <Hamburger
+              isOpen={isOpen}
+              onClick={() => setIsOpen((prev) => !prev)}
+            />
+          </IconsContainer>
         </Container>
       </StyledNav>
       <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} />

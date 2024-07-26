@@ -1,8 +1,8 @@
 import styled from "@emotion/styled"
 import { FC, useEffect, useRef, useState } from "react"
-import LocalLink from "../common/LocalLink"
 import { useEventListener } from "usehooks-ts"
 import { IsOpenType } from "./Nav"
+import { Link, useParams } from "@tanstack/react-router"
 
 const Aside = styled.aside<{ isOpen: IsOpenType }>`
   position: fixed;
@@ -72,6 +72,7 @@ const SideMenuItems = {
   Accessories: "/accessories",
   Tires: "/tires",
   Sale: "/sale",
+  Account: "/account",
 }
 
 type HoverType = keyof typeof SideMenuItems | null
@@ -82,6 +83,7 @@ type SideMenuProps = {
 }
 
 const SideMenu: FC<SideMenuProps> = ({ isOpen, setIsOpen }) => {
+  const { countryCode } = useParams({ strict: false })
   const [hoveredLink, setHoveredLink] = useState<HoverType>(null)
 
   const backdropRef = useRef<HTMLDivElement | null>(null)
@@ -128,7 +130,9 @@ const SideMenu: FC<SideMenuProps> = ({ isOpen, setIsOpen }) => {
               onClick={handleClose}
               key={name}
             >
-              <LocalLink to={path}>{name}</LocalLink>
+              <Link to={`/$countryCode${path}`} params={{ countryCode }}>
+                {name}
+              </Link>
             </Li>
           ))}
         </Ul>
