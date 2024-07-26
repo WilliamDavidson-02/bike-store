@@ -1,10 +1,9 @@
 import { css, keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
 import { FC, HTMLAttributes } from "react"
-import { IsOpenType } from "./Nav"
 
 type HamburgerProps = HTMLAttributes<HTMLDivElement> & {
-  isOpen: IsOpenType
+  isOpen: boolean
 }
 
 const firstLineForward = keyframes`
@@ -56,6 +55,9 @@ const secondLineBackward = keyframes`
 `
 
 const Container = styled.div`
+  position: relative;
+  z-index: 52;
+
   width: 1.5rem;
   height: 1.5rem;
 
@@ -67,7 +69,7 @@ const Container = styled.div`
   cursor: pointer;
 `
 
-const Line = styled.div<{ isOpen: IsOpenType }>`
+const Line = styled.div<{ isOpen: boolean }>`
   width: 100%;
   height: 2px;
   border-radius: 100vmax;
