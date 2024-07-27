@@ -9,7 +9,7 @@ type TypographyProps<T extends React.ElementType> = {
   css?: SerializedStyles
 } & React.ComponentPropsWithoutRef<T>
 
-const styles: Record<TypographyVariants, SerializedStyles> = {
+export const typographyStyles: Record<TypographyVariants, SerializedStyles> = {
   h1: css`
     font-weight: 300;
     font-size: 6rem;
@@ -79,11 +79,11 @@ const styles: Record<TypographyVariants, SerializedStyles> = {
 }
 
 const StyledComponents: Record<TypographyVariants, React.ElementType> =
-  Object.keys(styles).reduce(
+  Object.keys(typographyStyles).reduce(
     (acc, key) => {
       const variant = key as TypographyVariants
       acc[variant] = styled(variants[variant])<{ css?: SerializedStyles }>`
-        ${styles[variant]}
+        ${typographyStyles[variant]}
         ${({ css }) => css}
       `
       return acc

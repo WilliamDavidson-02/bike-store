@@ -1,8 +1,53 @@
 import { ButtonHTMLAttributes, FC } from "react"
 import styled from "@emotion/styled"
-import Typography from "./Typography"
+import { typographyStyles } from "./Typography"
+import { css, SerializedStyles, useTheme } from "@emotion/react"
+import { Theme } from "@emotion/react"
 
-const BaseButton = styled.button`
+const variantMap = {
+  interactive: (theme: Theme) => css`
+    background-color: ${theme.colors.button.bgUiButtonInteractive};
+    color: ${theme.colors.foreground.textUiFgOnColor};
+
+    &:hover {
+      background-color: ${theme.colors.button.bgUiButtonInteractiveHover};
+    }
+  `,
+  neutral: (theme: Theme) => css`
+    background-color: ${theme.colors.button.bgUiButtonNeutral};
+    color: ${theme.colors.foreground.textUiFgBase};
+
+    &:hover {
+      background-color: ${theme.colors.button.bgUiButtonNeutralHover};
+    }
+  `,
+  inverted: (theme: Theme) => css`
+    background-color: ${theme.colors.button.bgUiButtonInverted};
+    color: ${theme.colors.foreground.textUiFgOnInverted};
+
+    &:hover {
+      background-color: ${theme.colors.button.bgUiButtonInvertedHover};
+    }
+  `,
+  danger: (theme: Theme) => css`
+    background-color: ${theme.colors.button.bgUiButtonDanger};
+    color: ${theme.colors.foreground.textUiFgOnColor};
+
+    &:hover {
+      background-color: ${theme.colors.button.bgUiButtonDangerHover};
+    }
+  `,
+  ghost: (theme: Theme) => css`
+    background-color: transparent;
+    color: ${theme.colors.foreground.textUiFgInteractive};
+  `,
+} as const
+
+const StyledButton = styled.button<{
+  css?: SerializedStyles
+  variant: SerializedStyles
+}>`
+  ${typographyStyles.button}
   padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xxxl}`};
   border-radius: 100vmax;
 
@@ -10,76 +55,29 @@ const BaseButton = styled.button`
   cursor: pointer;
   outline: none;
   transition: background-color 0.2s;
+
+  ${({ variant }) => variant}
+  ${({ css }) => css}
 `
-
-const InteractiveButton = styled(BaseButton)`
-  background-color: ${({ theme }) => theme.colors.button.bgUiButtonInteractive};
-  color: ${({ theme }) => theme.colors.foreground.textUiFgOnColor};
-
-  &:hover {
-    background-color: ${({ theme }) =>
-      theme.colors.button.bgUiButtonInteractiveHover};
-  }
-`
-
-const NeutralButton = styled(BaseButton)`
-  background-color: ${({ theme }) => theme.colors.button.bgUiButtonNeutral};
-  color: ${({ theme }) => theme.colors.foreground.textUiFgBase};
-
-  &:hover {
-    background-color: ${({ theme }) =>
-      theme.colors.button.bgUiButtonNeutralHover};
-  }
-`
-
-const GhostButton = styled(BaseButton)`
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.foreground.textUiFgInteractive};
-`
-
-const InvertedButton = styled(BaseButton)`
-  background-color: ${({ theme }) => theme.colors.button.bgUiButtonInverted};
-  color: ${({ theme }) => theme.colors.foreground.textUiFgOnInverted};
-
-  &:hover {
-    background-color: ${({ theme }) =>
-      theme.colors.button.bgUiButtonInvertedHover};
-  }
-`
-
-const DangerButton = styled(BaseButton)`
-  background-color: ${({ theme }) => theme.colors.button.bgUiButtonDanger};
-  color: ${({ theme }) => theme.colors.foreground.textUiFgOnColor};
-
-  &:hover {
-    background-color: ${({ theme }) =>
-      theme.colors.button.bgUiButtonDangerHover};
-  }
-`
-
-const variantMap = {
-  interactive: InteractiveButton,
-  neutral: NeutralButton,
-  inverted: InvertedButton,
-  danger: DangerButton,
-  ghost: GhostButton,
-} as const
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode
   variant?: keyof typeof variantMap
+  css?: SerializedStyles
 }
 
 const Button: FC<ButtonProps> = ({
   children,
   variant = "interactive",
+  css,
   ...props
 }) => {
-  const Component = variantMap[variant]
+  const theme = useTheme()
+
   return (
-    <Component {...props}>
-      <Typography variant="button">{children}</Typography>
-    </Component>
+    <StyledButton variant={variantMap[variant](theme)} css={css} {...props}>
+      {children}
+    </StyledButton>
   )
 }
 
