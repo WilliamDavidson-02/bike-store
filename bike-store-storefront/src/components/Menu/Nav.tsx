@@ -9,8 +9,8 @@ import { css } from "@emotion/react"
 import { GlobalParams } from "src/types/global"
 import { useProductCategories } from "medusa-react"
 import { ProductCategory } from "@medusajs/medusa"
-
-const menuItems = ["helemts", "riding-gear", "accessories"]
+import Typography from "@components/common/Typography"
+import Box from "@components/common/Box"
 
 const Header = styled.header`
   position: sticky;
@@ -32,16 +32,15 @@ const StyledNav = styled.nav`
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.xxl}`};
+  padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.xl2}`};
 
   @media (min-width: 1024px) {
-    padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.xxxl}`};
+    padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.xl3}`};
   }
 `
 
 const LogoContainer = styled.div<{ isOpen: boolean }>`
   z-index: 52;
-  flex-grow: 1;
   display: flex;
   align-items: center;
 
@@ -50,6 +49,7 @@ const LogoContainer = styled.div<{ isOpen: boolean }>`
   }
 
   @media (max-width: 1024px) {
+    flex-grow: 1;
     transition: opacity 0.5s ease;
     ${({ isOpen }) =>
       isOpen !== undefined &&
@@ -59,7 +59,7 @@ const LogoContainer = styled.div<{ isOpen: boolean }>`
   }
 `
 
-const IconContainer = styled.div<{ isOpen: boolean }>`
+const NavItem = styled.div<{ isOpen: boolean }>`
   z-index: 52;
   height: 100%;
   padding: 0 ${({ theme }) => theme.spacing.lg};
@@ -81,6 +81,8 @@ const Nav = () => {
   const { countryCode } = useParams({ strict: false }) as GlobalParams
   const [isOpen, setIsOpen] = useState(false)
   const [categories, setCategories] = useState<ProductCategory[]>([])
+  const [selectedCategory, setSelectedCategory] =
+    useState<ProductCategory | null>(null)
 
   const size = useWindowSize()
   const navigate = useNavigate({ from: "/$countryCode" })
@@ -96,8 +98,24 @@ const Nav = () => {
     }
   }, [product_categories])
 
+  const handleClose = () => {
+    setSelectedCategory(null)
+    setIsOpen(false)
+  }
+
+  const handleMouseEnter = (category: ProductCategory) => {
+    setSelectedCategory(category)
+    setIsOpen(true)
+  }
+
+  const handleMouseLeave = (ev: React.MouseEvent) => {
+    const relatedTarget = ev.relatedTarget as Element
+
+    if (relatedTarget?.localName !== "aside") handleClose()
+  }
+
   useEventListener("resize", () => {
-    if (window.innerWidth > 1024 && isOpen) setIsOpen(false)
+    if (window.innerWidth > 1024 && isOpen) handleClose()
   })
 
   return (
@@ -108,26 +126,57 @@ const Nav = () => {
             <img src="/bike_store_logo.svg" alt="Bike store logo" />
           </Link>
         </LogoContainer>
-        <IconContainer isOpen={isOpen}>
+        {size.width > 1024 && (
+          <Box
+            css={css`
+              flex-grow: 1;
+              justify-content: center;
+              z-index: 52;
+              height: 100%;
+            `}
+          >
+            {categories.map((category) => (
+              <Link
+                to={`/$countryCode/${category.handle}`}
+                params={{ countryCode }}
+                key={category.id}
+              >
+                <NavItem
+                  onMouseEnter={() => handleMouseEnter(category)}
+                  onMouseLeave={handleMouseLeave}
+                  isOpen={false}
+                >
+                  <Typography variant="subtitle1">{category.name}</Typography>
+                </NavItem>
+              </Link>
+            ))}
+          </Box>
+        )}
+        <NavItem isOpen={isOpen}>
           <Search />
-        </IconContainer>
-        <IconContainer
+        </NavItem>
+        <NavItem
           onClick={() =>
             navigate({ to: "/$countryCode/cart", params: { countryCode } })
           }
           isOpen={isOpen}
         >
           <ShoppingBag />
-        </IconContainer>
+        </NavItem>
         {size.width <= 1024 && (
-          <IconContainer isOpen={false}>
+          <NavItem isOpen={false}>
             <Hamburger
               isOpen={isOpen}
-              onClick={() => setIsOpen((prev) => !prev)}
+              onClick={() => {
+                setIsOpen((prev) => !prev)
+                setSelectedCategory(null)
+              }}
             />
-          </IconContainer>
+          </NavItem>
         )}
         <SideMenu
+          setSelectedCategory={setSelectedCategory}
+          selectedCategory={selectedCategory}
           categories={categories}
           isOpen={isOpen}
           setIsOpen={setIsOpen}

@@ -9,9 +9,18 @@ const Aside = styled(motion.aside)`
   inset: 0;
   height: 100vh;
   background-color: ${({ theme }) => theme.colors.background.bgUiBgBase};
-  padding: ${({ theme }) => theme.spacing.xxl};
-  padding-top: 3rem;
+  padding: ${({ theme }) => theme.spacing.xl2};
+  padding-top: ${({ theme }) =>
+    `calc(${theme.spacing.xl5} + ${theme.spacing.xl2})`};
   z-index: 51;
+
+  @media (min-width: 1024px) {
+    height: fit-content;
+
+    padding: ${({ theme }) => `${theme.spacing.xl6} ${theme.spacing.xl3}`};
+    padding-top: ${({ theme }) =>
+      `calc(${theme.spacing.xl5} + ${theme.spacing.xl6})`};
+  }
 `
 
 const Backdrop = styled(motion.div)`
@@ -26,13 +35,28 @@ type SideMenuProps = {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   categories: ProductCategory[]
+  selectedCategory: ProductCategory | null
+  setSelectedCategory: React.Dispatch<
+    React.SetStateAction<ProductCategory | null>
+  >
 }
 
-const SideMenu: FC<SideMenuProps> = ({ isOpen, setIsOpen, categories }) => {
+const SideMenu: FC<SideMenuProps> = ({
+  isOpen,
+  setIsOpen,
+  categories,
+  selectedCategory,
+  setSelectedCategory,
+}) => {
   useEventListener(
     "keydown",
     ({ key }) => key === "Escape" && isOpen && setIsOpen(false),
   )
+
+  const handleMouseLeave = () => {
+    setIsOpen(false)
+    setSelectedCategory(null)
+  }
 
   return (
     <MotionConfig
@@ -56,13 +80,23 @@ const SideMenu: FC<SideMenuProps> = ({ isOpen, setIsOpen, categories }) => {
             />
             <Aside
               key="aside"
-              initial={{ clipPath: "rect(0 100% 0 0)" }}
+              initial={{ clipPath: "rect(0 100% 3rem 0)" }}
               animate={{ clipPath: "rect(0 100% 100% 0)" }}
-              exit={{ clipPath: "rect(0 100% 0 0)" }}
+              exit={{ clipPath: "rect(0 100% 3rem 0)" }}
+              onMouseLeave={handleMouseLeave}
             >
-              {categories.map((category) => (
-                <div key={category.id}>{category.name}</div>
-              ))}
+              {selectedCategory
+                ? selectedCategory.category_children.map((category) => (
+                    <div key={category.id}>{category.name}</div>
+                  ))
+                : categories.map((category) => (
+                    <div
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      {category.name}
+                    </div>
+                  ))}
             </Aside>
           </>
         )}

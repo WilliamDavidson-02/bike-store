@@ -48,7 +48,7 @@ const StyledButton = styled.button<{
   variant: SerializedStyles
 }>`
   ${typographyStyles.button}
-  padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xxxl}`};
+  padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xl3}`};
   border-radius: 100vmax;
 
   border: none;

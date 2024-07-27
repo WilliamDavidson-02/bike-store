@@ -101,8 +101,8 @@ export const globalTheme = {
     md: "6px",
     lg: "8px",
     xl: "12px",
-    xxl: "16px",
-    xxxl: "24px",
+    xl2: "16px",
+    xl3: "24px",
     full: "100vmax",
   },
   spacing: {
@@ -111,8 +111,11 @@ export const globalTheme = {
     md: "6px",
     lg: "8px",
     xl: "12px",
-    xxl: "16px",
-    xxxl: "24px",
+    xl2: "16px",
+    xl3: "24px",
+    xl4: "32px",
+    xl5: "38px",
+    xl6: "44px",
   },
 } as const
 
