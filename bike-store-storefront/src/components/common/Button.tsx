@@ -1,12 +1,8 @@
 import { ButtonHTMLAttributes, FC } from "react"
 import styled from "@emotion/styled"
+import Typography from "./Typography"
 
 const BaseButton = styled.button`
-  font-size: 17px;
-  line-height: 1.176;
-  font-weight: 400;
-  letter-spacing: -0.022em;
-
   padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xxxl}`};
   border-radius: 100vmax;
 
@@ -80,7 +76,11 @@ const Button: FC<ButtonProps> = ({
   ...props
 }) => {
   const Component = variantMap[variant]
-  return <Component {...props}>{children}</Component>
+  return (
+    <Component {...props}>
+      <Typography variant="button">{children}</Typography>
+    </Component>
+  )
 }
 
 export default Button

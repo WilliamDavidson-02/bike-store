@@ -2,6 +2,7 @@ import { FC } from "react"
 import { useEventListener } from "usehooks-ts"
 import styled from "@emotion/styled"
 import { AnimatePresence, motion, MotionConfig } from "framer-motion"
+import { ProductCategory } from "@medusajs/medusa"
 
 const Aside = styled(motion.aside)`
   position: fixed;
@@ -16,6 +17,7 @@ const Aside = styled(motion.aside)`
 const Backdrop = styled(motion.div)`
   position: fixed;
   inset: 0;
+  backdrop-filter: blur(2px);
   background-color: ${({ theme }) => theme.colors.background.bgUiBgOverlay};
   height: 100vh;
 `
@@ -23,9 +25,10 @@ const Backdrop = styled(motion.div)`
 type SideMenuProps = {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  categories: ProductCategory[]
 }
 
-const SideMenu: FC<SideMenuProps> = ({ isOpen, setIsOpen }) => {
+const SideMenu: FC<SideMenuProps> = ({ isOpen, setIsOpen, categories }) => {
   useEventListener(
     "keydown",
     ({ key }) => key === "Escape" && isOpen && setIsOpen(false),
@@ -57,7 +60,9 @@ const SideMenu: FC<SideMenuProps> = ({ isOpen, setIsOpen }) => {
               animate={{ clipPath: "rect(0 100% 100% 0)" }}
               exit={{ clipPath: "rect(0 100% 0 0)" }}
             >
-              Aside
+              {categories.map((category) => (
+                <div key={category.id}>{category.name}</div>
+              ))}
             </Aside>
           </>
         )}

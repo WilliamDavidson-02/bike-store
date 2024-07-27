@@ -1,22 +1,16 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "@emotion/styled"
 import Hamburger from "./Hamburger"
 import SideMenu from "./SideMenu"
 import { Search, ShoppingBag } from "lucide-react"
 import { Link, useNavigate, useParams } from "@tanstack/react-router"
-import { useWindowSize } from "usehooks-ts"
+import { useEventListener, useWindowSize } from "usehooks-ts"
 import { css } from "@emotion/react"
 import { GlobalParams } from "src/types/global"
+import { useProductCategories } from "medusa-react"
+import { ProductCategory } from "@medusajs/medusa"
 
-const SideMenuItems = {
-  Helemets: "/helmets",
-  "Riding Gear": "/riding-gear",
-  Parts: "/parts",
-  Accessories: "/accessories",
-  Tires: "/tires",
-  Sale: "/sale",
-  Account: "/account",
-}
+const menuItems = ["helemts", "riding-gear", "accessories"]
 
 const Header = styled.header`
   position: sticky;
@@ -86,13 +80,25 @@ const IconContainer = styled.div<{ isOpen: boolean }>`
 const Nav = () => {
   const { countryCode } = useParams({ strict: false }) as GlobalParams
   const [isOpen, setIsOpen] = useState(false)
+  const [categories, setCategories] = useState<ProductCategory[]>([])
 
   const size = useWindowSize()
   const navigate = useNavigate({ from: "/$countryCode" })
 
-  // const { product_categories, isLoading } = useProductCategories()
+  const { product_categories, isLoading } = useProductCategories({
+    q: "all",
+    include_descendants_tree: true,
+  })
 
-  // console.log({ isLoading, product_categories })
+  useEffect(() => {
+    if (!isLoading && product_categories) {
+      setCategories(product_categories[0].category_children)
+    }
+  }, [product_categories])
+
+  useEventListener("resize", () => {
+    if (window.innerWidth > 1024 && isOpen) setIsOpen(false)
+  })
 
   return (
     <Header>
@@ -113,13 +119,19 @@ const Nav = () => {
         >
           <ShoppingBag />
         </IconContainer>
-        <IconContainer isOpen={false}>
-          <Hamburger
-            isOpen={isOpen}
-            onClick={() => setIsOpen((prev) => !prev)}
-          />
-        </IconContainer>
-        <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+        {size.width <= 1024 && (
+          <IconContainer isOpen={false}>
+            <Hamburger
+              isOpen={isOpen}
+              onClick={() => setIsOpen((prev) => !prev)}
+            />
+          </IconContainer>
+        )}
+        <SideMenu
+          categories={categories}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
       </StyledNav>
     </Header>
   )
