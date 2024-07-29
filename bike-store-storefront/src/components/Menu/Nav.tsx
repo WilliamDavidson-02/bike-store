@@ -11,6 +11,7 @@ import { useProductCategories } from "medusa-react"
 import { ProductCategory } from "@medusajs/medusa"
 import Typography from "@components/common/Typography"
 import Box from "@components/common/Box"
+import { AnimatePresence, motion } from "framer-motion"
 
 const Header = styled.header`
   position: sticky;
@@ -24,9 +25,10 @@ const Header = styled.header`
     ${({ theme }) => theme.colors.border.borderUiBorderStrong};
 `
 
-const StyledNav = styled.nav`
+const StyledNav = styled.nav<{ isOpen: boolean }>`
   display: flex;
   align-items: center;
+  justify-content: ${({ isOpen }) => (isOpen ? "flex-end" : "flex-start")};
 
   max-width: 1024px;
   width: 100%;
@@ -39,7 +41,7 @@ const StyledNav = styled.nav`
   }
 `
 
-const LogoContainer = styled.div<{ isOpen: boolean }>`
+const LogoContainer = styled(motion.div)<{ isOpen: boolean }>`
   z-index: 52;
   display: flex;
   align-items: center;
@@ -50,39 +52,25 @@ const LogoContainer = styled.div<{ isOpen: boolean }>`
 
   @media (max-width: 1024px) {
     flex-grow: 1;
-    transition: opacity 0.5s ease;
-    ${({ isOpen }) =>
-      isOpen !== undefined &&
-      css`
-        opacity: ${isOpen ? "0" : "1"};
-      `}
   }
 `
 
-const NavItem = styled.div<{ isOpen: boolean }>`
+const NavItem = styled(motion.div)<{ isOpen: boolean }>`
   z-index: 52;
   height: 100%;
   padding: 0 ${({ theme }) => theme.spacing.lg};
   display: grid;
   place-content: center;
   cursor: pointer;
-
-  @media (max-width: 1024px) {
-    transition: opacity 0.5s ease;
-    ${({ isOpen }) =>
-      isOpen !== undefined &&
-      css`
-        opacity: ${isOpen ? "0" : "1"};
-      `}
-  }
 `
 
 const Nav = () => {
   const { countryCode } = useParams({ strict: false }) as GlobalParams
   const [isOpen, setIsOpen] = useState(false)
   const [categories, setCategories] = useState<ProductCategory[]>([])
-  const [selectedCategory, setSelectedCategory] =
-    useState<ProductCategory | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<ProductCategory[]>(
+    [],
+  )
 
   const size = useWindowSize()
   const navigate = useNavigate({ from: "/$countryCode" })
@@ -99,12 +87,12 @@ const Nav = () => {
   }, [product_categories])
 
   const handleClose = () => {
-    setSelectedCategory(null)
+    setSelectedCategory([])
     setIsOpen(false)
   }
 
   const handleMouseEnter = (category: ProductCategory) => {
-    setSelectedCategory(category)
+    setSelectedCategory((prev) => [...prev, category])
     setIsOpen(true)
   }
 
@@ -118,14 +106,26 @@ const Nav = () => {
     if (window.innerWidth > 1024 && isOpen) handleClose()
   })
 
+  const isNavItemVisible = !(isOpen && size.width <= 1024)
+
   return (
     <Header>
-      <StyledNav>
-        <LogoContainer isOpen={isOpen}>
-          <Link to="/$countryCode" params={{ countryCode }}>
-            <img src="/bike_store_logo.svg" alt="Bike store logo" />
-          </Link>
-        </LogoContainer>
+      <StyledNav isOpen={isOpen}>
+        <AnimatePresence>
+          {isNavItemVisible && (
+            <LogoContainer
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              isOpen={isOpen}
+            >
+              <Link to="/$countryCode" params={{ countryCode }}>
+                <img src="/bike_store_logo.svg" alt="Bike store logo" />
+              </Link>
+            </LogoContainer>
+          )}
+        </AnimatePresence>
+
         {size.width > 1024 && (
           <Box
             css={css`
@@ -152,24 +152,41 @@ const Nav = () => {
             ))}
           </Box>
         )}
-        <NavItem isOpen={isOpen}>
-          <Search />
-        </NavItem>
-        <NavItem
-          onClick={() =>
-            navigate({ to: "/$countryCode/cart", params: { countryCode } })
-          }
-          isOpen={isOpen}
-        >
-          <ShoppingBag />
-        </NavItem>
+        <AnimatePresence>
+          {isNavItemVisible && (
+            <>
+              <NavItem
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                isOpen={isOpen}
+              >
+                <Search />
+              </NavItem>
+              <NavItem
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() =>
+                  navigate({
+                    to: "/$countryCode/cart",
+                    params: { countryCode },
+                  })
+                }
+                isOpen={isOpen}
+              >
+                <ShoppingBag />
+              </NavItem>
+            </>
+          )}
+        </AnimatePresence>
         {size.width <= 1024 && (
           <NavItem isOpen={false}>
             <Hamburger
               isOpen={isOpen}
               onClick={() => {
                 setIsOpen((prev) => !prev)
-                setSelectedCategory(null)
+                setSelectedCategory([])
               }}
             />
           </NavItem>

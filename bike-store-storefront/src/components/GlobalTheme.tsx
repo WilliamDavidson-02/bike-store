@@ -128,7 +128,7 @@ const GlobalTheme: FC<GlobalThemeProps> = ({ children }) => {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: "Inter", sans-serif;
+            font-family: "Poppins", sans-serif;
             font-optical-sizing: auto;
             font-style: normal;
             font-variation-settings: "slnt" 0;
