@@ -18,9 +18,12 @@ import { Route as rootRoute } from './routes/__root'
 
 const IndexLazyImport = createFileRoute('/')()
 const CountryCodeIndexLazyImport = createFileRoute('/$countryCode/')()
+const CountryCodeStoreIndexLazyImport = createFileRoute(
+  '/$countryCode/store/',
+)()
 const CountryCodeCartIndexLazyImport = createFileRoute('/$countryCode/cart/')()
-const CountryCodeCategoryIndexLazyImport = createFileRoute(
-  '/$countryCode/$category/',
+const CountryCodeAccountIndexLazyImport = createFileRoute(
+  '/$countryCode/account/',
 )()
 
 // Create/Update Routes
@@ -37,6 +40,13 @@ const CountryCodeIndexLazyRoute = CountryCodeIndexLazyImport.update({
   import('./routes/$countryCode/index.lazy').then((d) => d.Route),
 )
 
+const CountryCodeStoreIndexLazyRoute = CountryCodeStoreIndexLazyImport.update({
+  path: '/$countryCode/store/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/$countryCode/store/index.lazy').then((d) => d.Route),
+)
+
 const CountryCodeCartIndexLazyRoute = CountryCodeCartIndexLazyImport.update({
   path: '/$countryCode/cart/',
   getParentRoute: () => rootRoute,
@@ -44,12 +54,12 @@ const CountryCodeCartIndexLazyRoute = CountryCodeCartIndexLazyImport.update({
   import('./routes/$countryCode/cart/index.lazy').then((d) => d.Route),
 )
 
-const CountryCodeCategoryIndexLazyRoute =
-  CountryCodeCategoryIndexLazyImport.update({
-    path: '/$countryCode/$category/',
+const CountryCodeAccountIndexLazyRoute =
+  CountryCodeAccountIndexLazyImport.update({
+    path: '/$countryCode/account/',
     getParentRoute: () => rootRoute,
   } as any).lazy(() =>
-    import('./routes/$countryCode/$category/index.lazy').then((d) => d.Route),
+    import('./routes/$countryCode/account/index.lazy').then((d) => d.Route),
   )
 
 // Populate the FileRoutesByPath interface
@@ -70,11 +80,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CountryCodeIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/$countryCode/$category/': {
-      id: '/$countryCode/$category/'
-      path: '/$countryCode/$category'
-      fullPath: '/$countryCode/$category'
-      preLoaderRoute: typeof CountryCodeCategoryIndexLazyImport
+    '/$countryCode/account/': {
+      id: '/$countryCode/account/'
+      path: '/$countryCode/account'
+      fullPath: '/$countryCode/account'
+      preLoaderRoute: typeof CountryCodeAccountIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/$countryCode/cart/': {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       path: '/$countryCode/cart'
       fullPath: '/$countryCode/cart'
       preLoaderRoute: typeof CountryCodeCartIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/$countryCode/store/': {
+      id: '/$countryCode/store/'
+      path: '/$countryCode/store'
+      fullPath: '/$countryCode/store'
+      preLoaderRoute: typeof CountryCodeStoreIndexLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -92,8 +109,9 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   CountryCodeIndexLazyRoute,
-  CountryCodeCategoryIndexLazyRoute,
+  CountryCodeAccountIndexLazyRoute,
   CountryCodeCartIndexLazyRoute,
+  CountryCodeStoreIndexLazyRoute,
 })
 
 /* prettier-ignore-end */
@@ -106,8 +124,9 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/$countryCode/",
-        "/$countryCode/$category/",
-        "/$countryCode/cart/"
+        "/$countryCode/account/",
+        "/$countryCode/cart/",
+        "/$countryCode/store/"
       ]
     },
     "/": {
@@ -116,11 +135,14 @@ export const routeTree = rootRoute.addChildren({
     "/$countryCode/": {
       "filePath": "$countryCode/index.lazy.tsx"
     },
-    "/$countryCode/$category/": {
-      "filePath": "$countryCode/$category/index.lazy.tsx"
+    "/$countryCode/account/": {
+      "filePath": "$countryCode/account/index.lazy.tsx"
     },
     "/$countryCode/cart/": {
       "filePath": "$countryCode/cart/index.lazy.tsx"
+    },
+    "/$countryCode/store/": {
+      "filePath": "$countryCode/store/index.lazy.tsx"
     }
   }
 }

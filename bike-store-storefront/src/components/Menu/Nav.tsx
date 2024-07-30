@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import styled from "@emotion/styled"
 import Hamburger from "./Hamburger"
 import SideMenu from "./SideMenu"
@@ -7,8 +7,6 @@ import { Link, useNavigate, useParams } from "@tanstack/react-router"
 import { useEventListener, useWindowSize } from "usehooks-ts"
 import { css } from "@emotion/react"
 import { GlobalParams } from "src/types/global"
-import { useProductCategories } from "medusa-react"
-import { ProductCategory } from "@medusajs/medusa"
 import Typography from "@components/common/Typography"
 import Box from "@components/common/Box"
 import { AnimatePresence, motion } from "framer-motion"
@@ -43,8 +41,11 @@ const StyledNav = styled.nav<{ isOpen: boolean }>`
 
 const LogoContainer = styled(motion.div)<{ isOpen: boolean }>`
   z-index: 52;
-  display: flex;
-  align-items: center;
+
+  & > a {
+    display: flex;
+    align-items: center;
+  }
 
   & img {
     height: 2rem;
@@ -64,46 +65,30 @@ const NavItem = styled(motion.div)<{ isOpen: boolean }>`
   cursor: pointer;
 `
 
+export const navRoutes = [
+  {
+    title: "Home",
+    route: "/",
+  },
+  {
+    title: "Store",
+    route: "/store",
+  },
+  {
+    title: "Account",
+    route: "/account",
+  },
+]
+
 const Nav = () => {
   const { countryCode } = useParams({ strict: false }) as GlobalParams
   const [isOpen, setIsOpen] = useState(false)
-  const [categories, setCategories] = useState<ProductCategory[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<ProductCategory[]>(
-    [],
-  )
 
   const size = useWindowSize()
   const navigate = useNavigate({ from: "/$countryCode" })
 
-  const { product_categories, isLoading } = useProductCategories({
-    q: "all",
-    include_descendants_tree: true,
-  })
-
-  useEffect(() => {
-    if (!isLoading && product_categories) {
-      setCategories(product_categories[0].category_children)
-    }
-  }, [product_categories])
-
-  const handleClose = () => {
-    setSelectedCategory([])
-    setIsOpen(false)
-  }
-
-  const handleMouseEnter = (category: ProductCategory) => {
-    setSelectedCategory((prev) => [...prev, category])
-    setIsOpen(true)
-  }
-
-  const handleMouseLeave = (ev: React.MouseEvent) => {
-    const relatedTarget = ev.relatedTarget as Element
-
-    if (relatedTarget?.localName !== "aside") handleClose()
-  }
-
   useEventListener("resize", () => {
-    if (window.innerWidth > 1024 && isOpen) handleClose()
+    if (window.innerWidth > 1024 && isOpen) setIsOpen(false)
   })
 
   const isNavItemVisible = !(isOpen && size.width <= 1024)
@@ -135,18 +120,14 @@ const Nav = () => {
               height: 100%;
             `}
           >
-            {categories.map((category) => (
+            {navRoutes.map(({ route, title }) => (
               <Link
-                to={`/$countryCode/${category.handle}`}
+                to={`/$countryCode${route}`}
                 params={{ countryCode }}
-                key={category.id}
+                key={title}
               >
-                <NavItem
-                  onMouseEnter={() => handleMouseEnter(category)}
-                  onMouseLeave={handleMouseLeave}
-                  isOpen={false}
-                >
-                  <Typography variant="subtitle1">{category.name}</Typography>
+                <NavItem isOpen={false}>
+                  <Typography variant="subtitle1">{title}</Typography>
                 </NavItem>
               </Link>
             ))}
@@ -184,20 +165,11 @@ const Nav = () => {
           <NavItem isOpen={false}>
             <Hamburger
               isOpen={isOpen}
-              onClick={() => {
-                setIsOpen((prev) => !prev)
-                setSelectedCategory([])
-              }}
+              onClick={() => setIsOpen((prev) => !prev)}
             />
           </NavItem>
         )}
-        <SideMenu
-          setSelectedCategory={setSelectedCategory}
-          selectedCategory={selectedCategory}
-          categories={categories}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-        />
+        <SideMenu isOpen={isOpen} setIsOpen={setIsOpen} />
       </StyledNav>
     </Header>
   )
