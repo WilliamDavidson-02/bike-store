@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, FC } from "react"
+import { ButtonHTMLAttributes, FC, ForwardedRef, forwardRef } from "react"
 import styled from "@emotion/styled"
 import { typographyStyles } from "./Typography"
 import { css, SerializedStyles, useTheme } from "@emotion/react"
@@ -9,37 +9,45 @@ const variantMap = {
     background-color: ${theme.colors.button.bgUiButtonInteractive};
     color: ${theme.colors.foreground.textUiFgOnColor};
 
-    &:hover {
-      background-color: ${theme.colors.button.bgUiButtonInteractiveHover};
+    @media (pointer: fine) {
+      &:hover {
+        background-color: ${theme.colors.button.bgUiButtonInteractiveHover};
+      }
     }
   `,
   neutral: (theme: Theme) => css`
     background-color: ${theme.colors.button.bgUiButtonNeutral};
     color: ${theme.colors.foreground.textUiFgBase};
 
-    &:hover {
-      background-color: ${theme.colors.button.bgUiButtonNeutralHover};
+    @media (pointer: fine) {
+      &:hover {
+        background-color: ${theme.colors.button.bgUiButtonNeutralHover};
+      }
     }
   `,
   inverted: (theme: Theme) => css`
     background-color: ${theme.colors.button.bgUiButtonInverted};
     color: ${theme.colors.foreground.textUiFgOnInverted};
 
-    &:hover {
-      background-color: ${theme.colors.button.bgUiButtonInvertedHover};
+    @media (pointer: fine) {
+      &:hover {
+        background-color: ${theme.colors.button.bgUiButtonInvertedHover};
+      }
     }
   `,
   danger: (theme: Theme) => css`
     background-color: ${theme.colors.button.bgUiButtonDanger};
     color: ${theme.colors.foreground.textUiFgOnColor};
 
-    &:hover {
-      background-color: ${theme.colors.button.bgUiButtonDangerHover};
+    @media (pointer: fine) {
+      &:hover {
+        background-color: ${theme.colors.button.bgUiButtonDangerHover};
+      }
     }
   `,
   ghost: (theme: Theme) => css`
     background-color: transparent;
-    color: ${theme.colors.foreground.textUiFgInteractive};
+    color: ${theme.colors.button.bgUiButtonInverted};
   `,
 } as const
 
@@ -49,11 +57,12 @@ const StyledButton = styled.button<{
 }>`
   ${typographyStyles.button}
   padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xl3}`};
-  border-radius: 100vmax;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
 
   border: none;
   cursor: pointer;
   outline: none;
+  user-select: none;
   transition: background-color 0.2s;
 
   ${({ variant }) => variant}
@@ -66,19 +75,24 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   css?: SerializedStyles
 }
 
-const Button: FC<ButtonProps> = ({
-  children,
-  variant = "interactive",
-  css,
-  ...props
-}) => {
-  const theme = useTheme()
+const Button: FC<ButtonProps> = forwardRef(
+  (
+    { children, variant = "interactive", css, ...props },
+    ref: ForwardedRef<HTMLButtonElement>,
+  ) => {
+    const theme = useTheme()
 
-  return (
-    <StyledButton variant={variantMap[variant](theme)} css={css} {...props}>
-      {children}
-    </StyledButton>
-  )
-}
+    return (
+      <StyledButton
+        ref={ref}
+        variant={variantMap[variant](theme)}
+        css={css}
+        {...props}
+      >
+        {children}
+      </StyledButton>
+    )
+  },
+)
 
 export default Button

@@ -16,15 +16,23 @@ const Aside = styled(motion.aside)`
   padding-top: ${({ theme }) =>
     `calc(${theme.spacing.xl5} + ${theme.spacing.xl4})`};
   z-index: 51;
+`
+
+const Ul = styled(motion.ul)`
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.md};
+  height: 100%;
+`
+
+const Li = styled(motion.ul)`
+  text-align: end;
+  list-style: none;
 
   & > a {
-    display: block;
     width: 100%;
-    text-align: end;
+    display: block;
   }
 `
 
@@ -72,18 +80,17 @@ const SideMenu: FC<SideMenuProps> = ({ isOpen, setIsOpen }) => {
               },
             }}
           >
-            {navRoutes.map(({ route, title }) => (
-              <Link
-                to={`/$countryCode${route}`}
-                params={{ countryCode }}
-                key={title}
-                onClick={() => setIsOpen(false)}
-              >
-                <Typography variant="h4" component="p">
-                  {title}
-                </Typography>
-              </Link>
-            ))}
+            <Ul>
+              {navRoutes.map(({ route, title }) => (
+                <Li key={title} onClick={() => setIsOpen(false)}>
+                  <Link to={`/$countryCode${route}`} params={{ countryCode }}>
+                    <Typography variant="h4" component="p">
+                      {title}
+                    </Typography>
+                  </Link>
+                </Li>
+              ))}
+            </Ul>
           </Aside>
         </>
       )}

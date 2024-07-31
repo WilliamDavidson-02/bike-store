@@ -11,6 +11,7 @@ import Nav from "@components/Menu/Nav"
 import { Region } from "@medusajs/medusa"
 import GlobalTheme from "@components/GlobalTheme"
 import { getRegionMapFromLocalStorage } from "@lib/utils"
+import MainLayout from "@components/layout/MainLayout"
 
 const BASE_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL
 const DEFAULT_REGION: string = import.meta.env.VITE_DEFAULT_REGION ?? "us"
@@ -28,7 +29,9 @@ export const Route = createRootRoute({
     >
       <GlobalTheme>
         <Nav />
-        <Outlet />
+        <MainLayout>
+          <Outlet />
+        </MainLayout>
       </GlobalTheme>
     </MedusaProvider>
   ),

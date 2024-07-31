@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import { css, SerializedStyles } from "@emotion/react"
 import { TypographyVariants, variants } from "src/types/typography"
+import { StyledCSS } from "src/types/global"
 
 type TypographyProps<T extends React.ElementType> = {
   variant?: TypographyVariants
@@ -82,7 +83,7 @@ const StyledComponents: Record<TypographyVariants, React.ElementType> =
   Object.keys(typographyStyles).reduce(
     (acc, key) => {
       const variant = key as TypographyVariants
-      acc[variant] = styled(variants[variant])<{ css?: SerializedStyles }>`
+      acc[variant] = styled(variants[variant])<StyledCSS>`
         ${typographyStyles[variant]}
         ${({ css }) => css}
       `

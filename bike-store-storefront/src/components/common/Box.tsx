@@ -1,5 +1,6 @@
 import { SerializedStyles } from "@emotion/react"
 import styled from "@emotion/styled"
+import { StyledCSS } from "src/types/global"
 
 type BoxProps<T extends React.ElementType> = {
   component?: T
@@ -7,7 +8,7 @@ type BoxProps<T extends React.ElementType> = {
   css?: SerializedStyles
 } & React.ComponentPropsWithoutRef<T>
 
-const StyledBox = styled("div")<{ css?: SerializedStyles }>`
+const StyledBox = styled("div")<StyledCSS>`
   display: flex;
 
   ${({ css }) => css}
