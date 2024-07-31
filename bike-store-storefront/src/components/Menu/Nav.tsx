@@ -10,6 +10,7 @@ import { GlobalParams } from "src/types/global"
 import Typography from "@components/common/Typography"
 import Box from "@components/common/Box"
 import { AnimatePresence, motion } from "framer-motion"
+import CountryList from "./CountryList"
 
 const Header = styled.header`
   position: sticky;
@@ -161,6 +162,7 @@ const Nav = () => {
             </>
           )}
         </AnimatePresence>
+        {size.width > 1024 && <CountryList />}
         {size.width <= 1024 && (
           <NavItem isOpen={false}>
             <Hamburger

@@ -1,3 +1,4 @@
+import { Region } from "@medusajs/medusa"
 import { AnyProps, LocalStorageRegions } from "../types/utils"
 
 export const getRegionMapFromLocalStorage = () => {

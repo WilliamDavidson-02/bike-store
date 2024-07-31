@@ -6,6 +6,9 @@ import { navRoutes } from "./Nav"
 import { Link, useParams } from "@tanstack/react-router"
 import { GlobalParams } from "src/types/global"
 import Typography from "@components/common/Typography"
+import Box from "@components/common/Box"
+import CountryList from "./CountryList"
+import { css, useTheme } from "@emotion/react"
 
 const Aside = styled(motion.aside)`
   position: fixed;
@@ -51,6 +54,7 @@ type SideMenuProps = {
 
 const SideMenu: FC<SideMenuProps> = ({ isOpen, setIsOpen }) => {
   const { countryCode } = useParams({ strict: false }) as GlobalParams
+  const theme = useTheme()
 
   useEventListener(
     "keydown",
@@ -91,6 +95,15 @@ const SideMenu: FC<SideMenuProps> = ({ isOpen, setIsOpen }) => {
                 </Li>
               ))}
             </Ul>
+            <Box
+              css={css`
+                position: fixed;
+                top: 0;
+                left: ${theme.spacing.xl2};
+              `}
+            >
+              <CountryList />
+            </Box>
           </Aside>
         </>
       )}

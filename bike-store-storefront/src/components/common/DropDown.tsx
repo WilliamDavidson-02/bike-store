@@ -48,7 +48,7 @@ export const DropDown: FC<DropDownProps> = ({ children }) => {
  * DropDownContent
  */
 
-type Direction = "over" | "under"
+export type Direction = "over" | "under"
 
 type DropDownContentProps = HTMLAttributes<HTMLUListElement> & {
   children: Children
@@ -59,6 +59,7 @@ const StyledContent = styled(motion.ul)<StyledCSS & { direction: Direction }>`
   border: 1px solid ${({ theme }) => theme.colors.border.borderUiBorderStrong};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: ${({ theme }) => theme.shadows.shadowMd};
+  background-color: ${({ theme }) => theme.colors.background.bgUiBgBase};
   overflow: hidden;
   position: absolute;
 
@@ -70,15 +71,9 @@ const StyledContent = styled(motion.ul)<StyledCSS & { direction: Direction }>`
       : css`
           bottom: calc(100% + ${theme.spacing.lg});
         `}
-  width: 100%;
 
   max-height: 800px;
   overflow-y: auto;
-
-  @media (min-width: 600px) {
-    width: fit-content;
-    min-width: calc(600px - (${({ theme }) => theme.spacing.xl2} * 2));
-  }
 
   ${({ css }) => css}
 `
@@ -140,6 +135,7 @@ const StyledItem = styled(motion.li)<StyledCSS>`
   list-style: none;
   cursor: pointer;
   padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+  white-space: nowrap;
 
   &:first-of-type {
     padding-top: ${({ theme }) => theme.spacing.lg};
