@@ -7,7 +7,7 @@ import {
   Outlet,
   redirect,
 } from "@tanstack/react-router"
-import Nav from "@components/Menu/Nav"
+import Nav from "@components/menu/Nav"
 import { Region } from "@medusajs/medusa"
 import GlobalTheme from "@components/GlobalTheme"
 import { getRegionMapFromLocalStorage } from "@lib/utils"

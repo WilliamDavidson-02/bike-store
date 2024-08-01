@@ -8,7 +8,6 @@ import {
   AnimatePresence,
   HTMLMotionProps,
   motion,
-  stagger,
   Variants,
 } from "framer-motion"
 import { StyledCSS } from "src/types/global"
