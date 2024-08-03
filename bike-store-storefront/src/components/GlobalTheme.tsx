@@ -149,6 +149,7 @@ const GlobalTheme: FC<GlobalThemeProps> = ({ children }) => {
           body {
             background-color: ${globalTheme.colors.background.bgUiBgBase};
             overflow-x: hidden;
+            scroll-behavior: smooth;
           }
 
           a {

@@ -29,10 +29,10 @@ type PaginatedProductsParams = {
 const ProductList = styled.ul`
   display: grid;
   grid-template-columns: 1fr;
-  gap: ${({ theme }) => theme.spacing.xl4};
+  grid-auto-rows: 1fr;
   list-style: none;
 
-  @media (min-width: 800px) {
+  @media (min-width: 800px) and (max-width: 1199px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -63,6 +63,8 @@ export const Store = () => {
         countryCode,
       })
 
+      console.log(response.products)
+
       setProducts(response.products)
       setCount(response.count)
     }
@@ -70,13 +72,11 @@ export const Store = () => {
     getStoreData()
   }, [countryCode])
 
-  console.log(products)
-
   return (
     <>
       <ProductList>
         {products.map((product) => (
-          <ProductPreview key={product.id} product={product} />
+          <ProductPreview key={product.id} product={product} count={count} />
         ))}
       </ProductList>
     </>
