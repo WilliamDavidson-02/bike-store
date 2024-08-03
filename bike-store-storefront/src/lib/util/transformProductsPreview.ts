@@ -1,9 +1,27 @@
 import { Region } from "@medusajs/medusa"
 import { PricedProduct } from "@medusajs/medusa/dist/types/pricing"
-import { ProductPreviewType } from "src/types/global"
+import { Badges, ProductPreviewType } from "src/types/global"
 import { CalculatedVariant } from "src/types/medusa"
 import { getPercentageDiff } from "./getPrecentageDiff"
 import { formatAmount } from "./price"
+
+const isSoldOut = ({ variants }: PricedProduct) => {
+  let inventory = 0
+  variants.forEach((v) => {
+    if (!v.inventory_quantity) return
+
+    inventory = v.inventory_quantity
+  })
+  return !inventory
+}
+
+const isNew = (date: Date) => {
+  const currentDate = new Date()
+  const extraMonth = new Date(date)
+  extraMonth.setMonth(extraMonth.getMonth() + 1)
+
+  return currentDate <= extraMonth
+}
 
 const transformProductPreview = (
   product: PricedProduct,
@@ -22,9 +40,15 @@ const transformProductPreview = (
     }, variants[0])
   }
 
+  let badges: Badges = []
+
+  if (isNew(product.created_at ?? new Date())) badges.push("new")
+  if (isSoldOut(product)) badges.push("sold out")
+
   return {
     id: product.id!,
     title: product.title!,
+    subtitle: product.subtitle!,
     handle: product.handle!,
     thumbnail: product.thumbnail!,
     created_at: product.created_at,
@@ -47,6 +71,7 @@ const transformProductPreview = (
           price_type: cheapestVariant.calculated_price_type,
         }
       : undefined,
+    badges: badges,
   }
 }
 

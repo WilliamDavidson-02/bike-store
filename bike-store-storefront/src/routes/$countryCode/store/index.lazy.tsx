@@ -1,4 +1,6 @@
+import ProductPreview from "@components/products/ProductPreview"
 import { SortOptions } from "@components/store/RefinementList"
+import styled from "@emotion/styled"
 import { getProductsListWithSort } from "@lib/data"
 import {
   createLazyFileRoute,
@@ -23,6 +25,21 @@ type PaginatedProductsParams = {
   category_id?: string[]
   id?: string[]
 }
+
+const ProductList = styled.ul`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: ${({ theme }) => theme.spacing.xl4};
+  list-style: none;
+
+  @media (min-width: 800px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+`
 
 export const Store = () => {
   const { countryCode } = useParams({ from: "/$countryCode/store/" })
@@ -53,7 +70,17 @@ export const Store = () => {
     getStoreData()
   }, [countryCode])
 
-  return <div>Hello /$countryCode/store/!</div>
+  console.log(products)
+
+  return (
+    <>
+      <ProductList>
+        {products.map((product) => (
+          <ProductPreview key={product.id} product={product} />
+        ))}
+      </ProductList>
+    </>
+  )
 }
 
 export const Route = createLazyFileRoute("/$countryCode/store/")({

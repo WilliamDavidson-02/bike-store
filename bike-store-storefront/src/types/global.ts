@@ -18,9 +18,12 @@ export type FeaturedProduct = {
   thumbnail?: string
 }
 
+export type Badges = ("new" | "sold out" | "sale")[]
+
 export type ProductPreviewType = {
   id: string
   title: string
+  subtitle: string
   handle: string | null
   thumbnail: string | null
   created_at?: Date
@@ -31,6 +34,7 @@ export type ProductPreviewType = {
     price_type: "default" | "sale"
   }
   isFeatured?: boolean
+  badges: Badges
 }
 
 export type ProductCollectionWithPreviews = Omit<
