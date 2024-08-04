@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react"
 import { ProductPreviewType } from "src/types/global"
 
-const PRODUCT_LIMIT = 12
+const PRODUCT_LIMIT = 5
 
 type Params = {
   searchParams: {
@@ -76,7 +76,11 @@ export const Store = () => {
     <>
       <ProductList>
         {products.map((product) => (
-          <ProductPreview key={product.id} product={product} count={count} />
+          <ProductPreview
+            key={product.id}
+            product={product}
+            count={products.length}
+          />
         ))}
       </ProductList>
     </>

@@ -6,4 +6,8 @@ Ecommerce store front built with react, tanstack router, emotion and framer moti
 
 ## Todo
 
+- Add product preview pagination
+- Add cetegory link on store page
+- Add store filter
+
 - Add product compare feature, [example](https://stenger-bike.de/en/pages/compare?first=stumpjumper-evo-expert-2024?variant%3D47817959899434&second=broam-30-2022?variant%3D47751955448106)

@@ -71,7 +71,9 @@ const Li = styled.li<{ count: number }>`
     }
 
     ${({ count }) => css`
-      &:nth-last-of-type(-n + ${count % 3 === 0 ? 3 : 1})::before {
+      &:nth-last-of-type(
+          -n + ${count % 3 === 0 ? 3 : count % 3 === 2 ? 2 : 1}
+        )::before {
         display: none;
       }
     `}

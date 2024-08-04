@@ -43,6 +43,7 @@ const transformProductPreview = (
   let badges: Badges = []
 
   if (isNew(product.created_at ?? new Date())) badges.push("new")
+  if (cheapestVariant?.calculated_price_type === "sale") badges.push("sale")
   if (isSoldOut(product)) badges.push("sold out")
 
   return {
