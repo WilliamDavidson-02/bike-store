@@ -6,7 +6,6 @@ Ecommerce store front built with react, tanstack router, emotion and framer moti
 
 ## Todo
 
-- Add product preview pagination
 - Add cetegory link on store page
 - Add store filter
 

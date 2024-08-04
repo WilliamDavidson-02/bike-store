@@ -1,7 +1,14 @@
-import { Region, StoreGetProductsParams } from "@medusajs/medusa"
+import {
+  ProductCategory,
+  Region,
+  StoreGetProductsParams,
+} from "@medusajs/medusa"
 import { medusaClient } from "./config"
 import { SortOptions } from "@components/store/RefinementList"
-import { ProductPreviewType } from "src/types/global"
+import {
+  ProductCategoryWithChildren,
+  ProductPreviewType,
+} from "src/types/global"
 import transformProductPreview from "./util/transformProductsPreview"
 import sortProducts from "./util/sortProducts"
 
@@ -145,5 +152,117 @@ export const getProductsListWithSort = async ({
     },
     nextPage,
     queryParams,
+  }
+}
+
+/**
+ * Categories
+ */
+
+type GetCategoriesList = {
+  product_categories: ProductCategoryWithChildren[]
+  count: number
+}
+
+export const getCategoriesList = async (
+  offset: number = 0,
+  limit: number = 100,
+): Promise<GetCategoriesList> => {
+  const { product_categories, count } = await medusaClient.productCategories
+    .list({ limit, offset })
+    .catch((error) => {
+      throw error
+    })
+
+  return {
+    product_categories,
+    count,
+  }
+}
+
+type GetCategoryByHandle = {
+  product_categories: ProductCategoryWithChildren[]
+}
+
+export const getCategoryByHandle = async (
+  categoryHandle: string[],
+): Promise<GetCategoryByHandle> => {
+  const handles = categoryHandle.map((_, index: number) =>
+    categoryHandle.slice(0, index + 1).join("/"),
+  )
+
+  const product_categories = [] as ProductCategoryWithChildren[]
+
+  for (const handle of handles) {
+    const category = await medusaClient.productCategories
+      .list({
+        handle: handle,
+      })
+      .then(({ product_categories: { [0]: category } }) => category)
+      .catch(() => {
+        return {} as ProductCategory
+      })
+
+    product_categories.push(category)
+  }
+
+  return {
+    product_categories,
+  }
+}
+
+type GetProductsByCategoryhandleProps = {
+  page?: number
+  handle: string
+  countryCode: string
+  sortBy?: SortOptions
+  queryParams?: StoreGetProductsParams
+}
+
+type ChildCategory = {
+  handle: string
+  name: string
+}
+
+type GetProductsByCategoryhandle = {
+  name: string
+  handle: string
+  childCategories: ChildCategory[]
+  response: { products: ProductPreviewType[]; count: number }
+  nextPage: number | null
+}
+
+export const getProductsByCategoryHandle = async ({
+  page = 0,
+  handle,
+  countryCode,
+  sortBy,
+  queryParams,
+}: GetProductsByCategoryhandleProps): Promise<GetProductsByCategoryhandle> => {
+  const category = await getCategoryByHandle([handle]).then(
+    (res) => res.product_categories[0],
+  )
+
+  const childCategories = category.category_children.map(
+    ({ handle, name }) => ({ handle, name }),
+  )
+
+  const { response, nextPage } = await getProductsListWithSort({
+    page,
+    queryParams: { ...queryParams, category_id: [category.id] },
+    countryCode,
+    sortBy,
+  })
+    .then((res) => res)
+    .catch((err) => {
+      throw err
+    })
+
+  return {
+    handle: category.handle,
+    name: category.name,
+    childCategories: childCategories,
+    response,
+    nextPage,
   }
 }

@@ -2,7 +2,7 @@ import ProductPreview from "@components/products/ProductPreview"
 import Pagination from "@components/store/Pagination"
 import { SortOptions } from "@components/store/RefinementList"
 import styled from "@emotion/styled"
-import { getProductsListWithSort } from "@lib/data"
+import { getProductsByCategoryHandle } from "@lib/data"
 import {
   createLazyFileRoute,
   useParams,
@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from "react"
 import { ProductPreviewType } from "src/types/global"
 
-const PRODUCT_LIMIT = 5
+const PRODUCT_LIMIT = 50
 
 type Params = {
   sortBy?: SortOptions
@@ -55,14 +55,13 @@ export const Store = () => {
         limit: PRODUCT_LIMIT,
       }
 
-      const { response } = await getProductsListWithSort({
-        page: page,
+      const { response } = await getProductsByCategoryHandle({
+        handle: "all",
+        page,
         queryParams,
         sortBy: searchParams?.sortBy,
         countryCode,
       })
-
-      console.log(response.products)
 
       setProducts(response.products)
       setCount(response.count)
