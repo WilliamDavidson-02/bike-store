@@ -1,4 +1,5 @@
 import ProductPreview from "@components/products/ProductPreview"
+import Pagination from "@components/store/Pagination"
 import { SortOptions } from "@components/store/RefinementList"
 import styled from "@emotion/styled"
 import { getProductsListWithSort } from "@lib/data"
@@ -13,10 +14,8 @@ import { ProductPreviewType } from "src/types/global"
 const PRODUCT_LIMIT = 5
 
 type Params = {
-  searchParams: {
-    sortBy?: SortOptions
-    page?: string
-  }
+  sortBy?: SortOptions
+  page?: string
 }
 
 type PaginatedProductsParams = {
@@ -43,10 +42,12 @@ const ProductList = styled.ul`
 
 export const Store = () => {
   const { countryCode } = useParams({ from: "/$countryCode/store/" })
-  const { searchParams } = useSearch({ strict: false }) as Params
+  const searchParams = useSearch({ strict: false }) as Params
 
   const [products, setProducts] = useState<ProductPreviewType[]>([])
   const [count, setCount] = useState(0)
+
+  const page = searchParams?.page ? parseInt(searchParams?.page) : 1
 
   useEffect(() => {
     const getStoreData = async () => {
@@ -54,10 +55,8 @@ export const Store = () => {
         limit: PRODUCT_LIMIT,
       }
 
-      const pageNumber = searchParams?.page ? parseInt(searchParams?.page) : 1
-
       const { response } = await getProductsListWithSort({
-        page: pageNumber,
+        page: page,
         queryParams,
         sortBy: searchParams?.sortBy,
         countryCode,
@@ -70,7 +69,7 @@ export const Store = () => {
     }
 
     getStoreData()
-  }, [countryCode])
+  }, [countryCode, searchParams.page])
 
   return (
     <>
@@ -83,6 +82,7 @@ export const Store = () => {
           />
         ))}
       </ProductList>
+      <Pagination page={page} totalPages={Math.ceil(count / PRODUCT_LIMIT)} />
     </>
   )
 }

@@ -10,7 +10,7 @@ const variantMap = {
     color: ${theme.colors.foreground.textUiFgOnColor};
 
     @media (pointer: fine) {
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: ${theme.colors.button.bgUiButtonInteractiveHover};
       }
     }
@@ -20,7 +20,7 @@ const variantMap = {
     color: ${theme.colors.foreground.textUiFgBase};
 
     @media (pointer: fine) {
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: ${theme.colors.button.bgUiButtonNeutralHover};
       }
     }
@@ -30,7 +30,7 @@ const variantMap = {
     color: ${theme.colors.foreground.textUiFgOnInverted};
 
     @media (pointer: fine) {
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: ${theme.colors.button.bgUiButtonInvertedHover};
       }
     }
@@ -40,7 +40,7 @@ const variantMap = {
     color: ${theme.colors.foreground.textUiFgOnColor};
 
     @media (pointer: fine) {
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: ${theme.colors.button.bgUiButtonDangerHover};
       }
     }
@@ -65,14 +65,19 @@ const StyledButton = styled.button<{
   user-select: none;
   transition: background-color 0.2s;
 
+  &:disabled {
+    cursor: default;
+  }
+
   ${({ variant }) => variant}
   ${({ css }) => css}
 `
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode
   variant?: keyof typeof variantMap
   css?: SerializedStyles
+  as?: React.ElementType<any, keyof React.JSX.IntrinsicElements>
 }
 
 const Button: FC<ButtonProps> = forwardRef(
