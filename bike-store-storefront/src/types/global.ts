@@ -1,3 +1,4 @@
+import { SortOptions } from "@components/store/RefinementList"
 import { SerializedStyles } from "@emotion/react"
 import { ProductCategory, ProductCollection, Region } from "@medusajs/medusa"
 import { PricedProduct } from "@medusajs/medusa/dist/types/pricing"
@@ -5,6 +6,11 @@ import { Cart, ProductVariant } from "medusa-react"
 
 export type GlobalParams = {
   countryCode: string
+}
+
+export type SearchParams = {
+  sortBy?: SortOptions
+  page?: string | number
 }
 
 export type StyledCSS = {

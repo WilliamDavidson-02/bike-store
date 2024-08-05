@@ -2,7 +2,6 @@ import Button, { ButtonProps } from "@components/common/Button"
 import Typography from "@components/common/Typography"
 import { css, useTheme } from "@emotion/react"
 import styled from "@emotion/styled"
-import { useNavigate, useParams, useSearch } from "@tanstack/react-router"
 import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react"
 import { FC } from "react"
 import { useWindowSize } from "usehooks-ts"
@@ -19,24 +18,10 @@ const TriggerCss = css`
 export const PaginationTrigger: FC<
   ButtonProps & { p: number; currentPage?: number }
 > = ({ children, variant = "neutral", p, currentPage, ...props }) => {
-  const { countryCode } = useParams({ from: "/$countryCode/store/" })
-  const navigate = useNavigate({ from: "/$countryCode/store" })
-  const searchParams = useSearch({ from: "/$countryCode/store/" }) as any
   const theme = useTheme()
 
-  const handlePageChange = (newPage: number) => {
-    let params = searchParams
-    params.page = newPage
-
-    navigate({
-      to: "/$countryCode/store",
-      params: { countryCode },
-      search: params,
-    })
-  }
   return (
     <Button
-      onClick={() => handlePageChange(p)}
       variant={variant}
       css={css`
         ${p === currentPage &&
@@ -70,6 +55,7 @@ export const PaginationEllipsis = () => {
 type PaginationProps = {
   page: number
   totalPages: number
+  handlePageChange: (newPage: number) => void
 }
 
 const Container = styled.div`
@@ -80,7 +66,11 @@ const Container = styled.div`
   width: 100%;
 `
 
-const Pagination: FC<PaginationProps> = ({ page, totalPages }) => {
+const Pagination: FC<PaginationProps> = ({
+  page,
+  totalPages,
+  handlePageChange,
+}) => {
   const size = useWindowSize()
 
   // Helper function to generate an array of numbers within a range
@@ -91,6 +81,7 @@ const Pagination: FC<PaginationProps> = ({ page, totalPages }) => {
   return (
     <Container>
       <PaginationTrigger
+        onClick={() => handlePageChange(page - 1)}
         p={page - 1}
         disabled={page <= 1}
         variant="interactive"
@@ -101,47 +92,83 @@ const Pagination: FC<PaginationProps> = ({ page, totalPages }) => {
       {size.width >= 600 ? (
         totalPages <= 7 ? (
           arrayRange(1, totalPages).map((p) => (
-            <PaginationTrigger currentPage={page} p={p} key={p}>
+            <PaginationTrigger
+              onClick={() => handlePageChange(p)}
+              currentPage={page}
+              p={p}
+              key={p}
+            >
               {p}
             </PaginationTrigger>
           ))
         ) : page <= 4 ? (
           <>
             {arrayRange(1, 5).map((p) => (
-              <PaginationTrigger currentPage={page} p={p} key={p}>
+              <PaginationTrigger
+                onClick={() => handlePageChange(p)}
+                currentPage={page}
+                p={p}
+                key={p}
+              >
                 {p}
               </PaginationTrigger>
             ))}
             <PaginationEllipsis />
-            <PaginationTrigger currentPage={page} p={totalPages}>
+            <PaginationTrigger
+              onClick={() => handlePageChange(totalPages)}
+              currentPage={page}
+              p={totalPages}
+            >
               {totalPages}
             </PaginationTrigger>
           </>
         ) : page >= totalPages - 3 ? (
           <>
-            <PaginationTrigger currentPage={page} p={1}>
+            <PaginationTrigger
+              onClick={() => handlePageChange(1)}
+              currentPage={page}
+              p={1}
+            >
               1
             </PaginationTrigger>
             <PaginationEllipsis />
             {arrayRange(totalPages - 4, totalPages).map((p) => (
-              <PaginationTrigger currentPage={page} p={p} key={p}>
+              <PaginationTrigger
+                onClick={() => handlePageChange(p)}
+                currentPage={page}
+                p={p}
+                key={p}
+              >
                 {p}
               </PaginationTrigger>
             ))}
           </>
         ) : (
           <>
-            <PaginationTrigger currentPage={page} p={1}>
+            <PaginationTrigger
+              onClick={() => handlePageChange(1)}
+              currentPage={page}
+              p={1}
+            >
               1
             </PaginationTrigger>
             <PaginationEllipsis />
             {arrayRange(page - 1, page + 1).map((p) => (
-              <PaginationTrigger currentPage={page} p={p} key={p}>
+              <PaginationTrigger
+                onClick={() => handlePageChange(p)}
+                currentPage={page}
+                p={p}
+                key={p}
+              >
                 {p}
               </PaginationTrigger>
             ))}
             <PaginationEllipsis />
-            <PaginationTrigger currentPage={page} p={totalPages}>
+            <PaginationTrigger
+              onClick={() => handlePageChange(totalPages)}
+              currentPage={page}
+              p={totalPages}
+            >
               {totalPages}
             </PaginationTrigger>
           </>
@@ -151,6 +178,7 @@ const Pagination: FC<PaginationProps> = ({ page, totalPages }) => {
       )}
 
       <PaginationTrigger
+        onClick={() => handlePageChange(page + 1)}
         p={page + 1}
         disabled={page === totalPages}
         variant="interactive"

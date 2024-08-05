@@ -1,8 +1,6 @@
 import ProductPreview from "@components/products/ProductPreview"
 import Pagination from "@components/store/Pagination"
-import styled from "@emotion/styled"
 import useProducts from "@lib/hooks/useProducts"
-import { getPageNumber } from "@lib/utils"
 import {
   createLazyFileRoute,
   useNavigate,
@@ -10,28 +8,17 @@ import {
   useSearch,
 } from "@tanstack/react-router"
 import { SearchParams } from "src/types/global"
+import { ProductList } from "../index.lazy"
+import { getPageNumber } from "@lib/utils"
 
 const PRODUCT_LIMIT = 50
 
-export const ProductList = styled.ul`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-auto-rows: 1fr;
-  list-style: none;
-
-  @media (min-width: 800px) and (max-width: 1199px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (min-width: 1200px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-`
-
-export const Store = () => {
-  const { countryCode } = useParams({ from: "/$countryCode/store/" })
+export const StoreCategory = () => {
+  const { countryCode, category } = useParams({
+    from: "/$countryCode/store/$category/",
+  })
   const searchParams = useSearch({ strict: false }) as SearchParams
-  const navigate = useNavigate({ from: "/$countryCode/store" })
+  const navigate = useNavigate({ from: "/$countryCode/store/$category" })
 
   const page = getPageNumber(searchParams)
 
@@ -40,14 +27,14 @@ export const Store = () => {
     params.page = newPage
 
     navigate({
-      to: "/$countryCode/store",
+      to: "/$countryCode/store/$category",
       params: { countryCode },
       search: params,
     })
   }
 
   const { products, count } = useProducts({
-    handle: "all",
+    handle: category,
     countryCode,
     searchParams,
     prodLimit: PRODUCT_LIMIT,
@@ -74,6 +61,6 @@ export const Store = () => {
   )
 }
 
-export const Route = createLazyFileRoute("/$countryCode/store/")({
-  component: Store,
+export const Route = createLazyFileRoute("/$countryCode/store/$category/")({
+  component: StoreCategory,
 })

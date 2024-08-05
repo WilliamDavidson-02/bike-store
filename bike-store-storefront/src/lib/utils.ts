@@ -1,3 +1,4 @@
+import { SearchParams } from "src/types/global"
 import { AnyProps, LocalStorageRegions } from "../types/utils"
 
 export const getRegionMapFromLocalStorage = () => {
@@ -67,4 +68,8 @@ export const isEmpty = (input: any) => {
     (isArray(input) && (input as any[]).length === 0) ||
     (typeof input === "string" && input.trim().length === 0)
   )
+}
+
+export const getPageNumber = (searchParams: SearchParams) => {
+  return searchParams?.page ? parseInt(searchParams?.page.toString()) : 1
 }
