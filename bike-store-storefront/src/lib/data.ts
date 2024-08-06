@@ -219,7 +219,7 @@ type GetProductsByCategoryhandleProps = {
   queryParams?: StoreGetProductsParams
 }
 
-type ChildCategory = {
+export type ChildCategory = {
   handle: string
   name: string
 }
@@ -243,7 +243,7 @@ export const getProductsByCategoryHandle = async ({
     (res) => res.product_categories[0],
   )
 
-  const childCategories = category.category_children.map(
+  const childCategories = category?.category_children.map(
     ({ handle, name }) => ({ handle, name }),
   )
 

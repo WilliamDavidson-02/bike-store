@@ -1,4 +1,5 @@
 import ProductPreview from "@components/products/ProductPreview"
+import Categories from "@components/store/Categories"
 import Pagination from "@components/store/Pagination"
 import styled from "@emotion/styled"
 import useProducts from "@lib/hooks/useProducts"
@@ -46,7 +47,7 @@ export const Store = () => {
     })
   }
 
-  const { products, count } = useProducts({
+  const { products, count, childCategories } = useProducts({
     handle: "all",
     countryCode,
     searchParams,
@@ -56,6 +57,7 @@ export const Store = () => {
 
   return (
     <>
+      <Categories childCategories={childCategories} />
       <ProductList>
         {products.map((product) => (
           <ProductPreview

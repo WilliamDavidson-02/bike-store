@@ -1,4 +1,5 @@
-import { getProductsByCategoryHandle } from "@lib/data"
+import { ChildCategory, getProductsByCategoryHandle } from "@lib/data"
+import { StoreGetProductsParams } from "@medusajs/medusa"
 import { useEffect, useState } from "react"
 import { ProductPreviewType, SearchParams } from "src/types/global"
 
@@ -10,13 +11,6 @@ type useProductsProps = {
   handle: string
 }
 
-type PaginatedProductsParams = {
-  limit: number
-  collection_id?: string[]
-  category_id?: string[]
-  id?: string[]
-}
-
 const useProducts = ({
   countryCode,
   searchParams,
@@ -26,14 +20,15 @@ const useProducts = ({
 }: useProductsProps) => {
   const [products, setProducts] = useState<ProductPreviewType[]>([])
   const [count, setCount] = useState(0)
+  const [childCategories, setChildCategories] = useState<ChildCategory[]>([])
 
   useEffect(() => {
     const getStoreData = async () => {
-      const queryParams: PaginatedProductsParams = {
+      const queryParams: StoreGetProductsParams = {
         limit: prodLimit,
       }
 
-      const { response } = await getProductsByCategoryHandle({
+      const category = await getProductsByCategoryHandle({
         handle,
         page,
         queryParams,
@@ -41,16 +36,20 @@ const useProducts = ({
         countryCode,
       })
 
-      setProducts(response.products)
-      setCount(response.count)
+      console.log(category)
+
+      setProducts(category.response.products)
+      setCount(category.response.count)
+      setChildCategories(category.childCategories)
     }
 
     getStoreData()
-  }, [countryCode, searchParams.page])
+  }, [countryCode, searchParams.page, handle])
 
   return {
     products,
     count,
+    childCategories,
   }
 }
 

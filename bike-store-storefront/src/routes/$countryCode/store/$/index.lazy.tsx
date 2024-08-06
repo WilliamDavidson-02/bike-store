@@ -10,31 +10,33 @@ import {
 import { SearchParams } from "src/types/global"
 import { ProductList } from "../index.lazy"
 import { getPageNumber } from "@lib/utils"
+import Categories from "@components/store/Categories"
 
 const PRODUCT_LIMIT = 50
 
 export const StoreCategory = () => {
-  const { countryCode, category } = useParams({
-    from: "/$countryCode/store/$category/",
+  const { _splat } = useParams({
+    from: "/$countryCode/store/$/",
   })
   const searchParams = useSearch({ strict: false }) as SearchParams
-  const navigate = useNavigate({ from: "/$countryCode/store/$category" })
+  const navigate = useNavigate({ from: "/$countryCode/store/$" })
 
+  const countryCode = window.location.pathname.split("/")[1]
   const page = getPageNumber(searchParams)
+  const handle = _splat.split("/")[_splat.split("/").length - 1]
 
   const handlePageChange = (newPage: number) => {
     let params = searchParams
     params.page = newPage
 
     navigate({
-      to: "/$countryCode/store/$category",
-      params: { countryCode },
+      to: `${countryCode}/store/${_splat}`,
       search: params,
     })
   }
 
-  const { products, count } = useProducts({
-    handle: category,
+  const { products, count, childCategories } = useProducts({
+    handle,
     countryCode,
     searchParams,
     prodLimit: PRODUCT_LIMIT,
@@ -43,6 +45,7 @@ export const StoreCategory = () => {
 
   return (
     <>
+      <Categories splat={_splat} childCategories={childCategories} />
       <ProductList>
         {products.map((product) => (
           <ProductPreview
@@ -61,6 +64,6 @@ export const StoreCategory = () => {
   )
 }
 
-export const Route = createLazyFileRoute("/$countryCode/store/$category/")({
+export const Route = createLazyFileRoute("/$countryCode/store/$/")({
   component: StoreCategory,
 })

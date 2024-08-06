@@ -25,8 +25,8 @@ const CountryCodeCartIndexLazyImport = createFileRoute('/$countryCode/cart/')()
 const CountryCodeAccountIndexLazyImport = createFileRoute(
   '/$countryCode/account/',
 )()
-const CountryCodeStoreCategoryIndexLazyImport = createFileRoute(
-  '/$countryCode/store/$category/',
+const CountryCodeStoreSplatIndexLazyImport = createFileRoute(
+  '/$countryCode/store/$/',
 )()
 
 // Create/Update Routes
@@ -65,14 +65,12 @@ const CountryCodeAccountIndexLazyRoute =
     import('./routes/$countryCode/account/index.lazy').then((d) => d.Route),
   )
 
-const CountryCodeStoreCategoryIndexLazyRoute =
-  CountryCodeStoreCategoryIndexLazyImport.update({
-    path: '/$countryCode/store/$category/',
+const CountryCodeStoreSplatIndexLazyRoute =
+  CountryCodeStoreSplatIndexLazyImport.update({
+    path: '/$countryCode/store/$/',
     getParentRoute: () => rootRoute,
   } as any).lazy(() =>
-    import('./routes/$countryCode/store/$category/index.lazy').then(
-      (d) => d.Route,
-    ),
+    import('./routes/$countryCode/store/$/index.lazy').then((d) => d.Route),
   )
 
 // Populate the FileRoutesByPath interface
@@ -114,11 +112,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CountryCodeStoreIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/$countryCode/store/$category/': {
-      id: '/$countryCode/store/$category/'
-      path: '/$countryCode/store/$category'
-      fullPath: '/$countryCode/store/$category'
-      preLoaderRoute: typeof CountryCodeStoreCategoryIndexLazyImport
+    '/$countryCode/store/$/': {
+      id: '/$countryCode/store/$/'
+      path: '/$countryCode/store/$'
+      fullPath: '/$countryCode/store/$'
+      preLoaderRoute: typeof CountryCodeStoreSplatIndexLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -132,7 +130,7 @@ export const routeTree = rootRoute.addChildren({
   CountryCodeAccountIndexLazyRoute,
   CountryCodeCartIndexLazyRoute,
   CountryCodeStoreIndexLazyRoute,
-  CountryCodeStoreCategoryIndexLazyRoute,
+  CountryCodeStoreSplatIndexLazyRoute,
 })
 
 /* prettier-ignore-end */
@@ -148,7 +146,7 @@ export const routeTree = rootRoute.addChildren({
         "/$countryCode/account/",
         "/$countryCode/cart/",
         "/$countryCode/store/",
-        "/$countryCode/store/$category/"
+        "/$countryCode/store/$/"
       ]
     },
     "/": {
@@ -166,8 +164,8 @@ export const routeTree = rootRoute.addChildren({
     "/$countryCode/store/": {
       "filePath": "$countryCode/store/index.lazy.tsx"
     },
-    "/$countryCode/store/$category/": {
-      "filePath": "$countryCode/store/$category/index.lazy.tsx"
+    "/$countryCode/store/$/": {
+      "filePath": "$countryCode/store/$/index.lazy.tsx"
     }
   }
 }
