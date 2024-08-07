@@ -44,7 +44,7 @@ const useProducts = ({
     }
 
     getStoreData()
-  }, [countryCode, searchParams.page, handle])
+  }, [countryCode, searchParams.page, searchParams.sortBy, handle, page])
 
   return {
     products,

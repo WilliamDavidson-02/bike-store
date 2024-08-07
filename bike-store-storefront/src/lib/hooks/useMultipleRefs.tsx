@@ -5,17 +5,16 @@ import React from "react"
  * @param ref The ref to use for the instance.
  * @param instance The instance being set.
  */
-function setRef<TInstance>(ref: React.Ref<TInstance>, instance: TInstance) {
+function setRef<T>(ref: React.Ref<T>, instance: T) {
   if (ref instanceof Function) {
     ref(instance)
-  } else if (ref != null) {
-    ;(ref as React.MutableRefObject<TInstance>).current = instance
+  } else if (ref) {
+    ;(ref as React.MutableRefObject<T>).current = instance
   }
 }
 
-export function combinedRef<TInstance>(refs: React.Ref<TInstance>[]) {
-  return (instance: TInstance | null) =>
-    refs.forEach((ref) => setRef(ref, instance))
+export function combinedRef<T>(refs: React.Ref<T>[]) {
+  return (instance: T | null) => refs.forEach((ref) => setRef(ref, instance))
 }
 
 // CREDIT https://github.com/radix-ui/primitives/blob/main/packages/react/compose-refs/src/composeRefs.tsx
@@ -24,6 +23,6 @@ export function combinedRef<TInstance>(refs: React.Ref<TInstance>[]) {
  * @param refs The refs that should receive the instance.
  * @returns The combined ref.
  */
-export function useMultipleRefs<TInstance>(...refs: React.Ref<TInstance>[]) {
-  return React.useCallback(combinedRef(refs), refs)
+export function useMultipleRefs<T>(...refs: React.Ref<T>[]) {
+  return React.useCallback(combinedRef(refs), [refs])
 }

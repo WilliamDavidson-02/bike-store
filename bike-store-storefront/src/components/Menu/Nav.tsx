@@ -11,6 +11,7 @@ import Typography from "@components/common/Typography"
 import Box from "@components/common/Box"
 import { AnimatePresence, motion } from "framer-motion"
 import CountryList from "./CountryList"
+import { navRoutes } from "@lib/routes"
 
 const Header = styled.header`
   position: sticky;
@@ -65,21 +66,6 @@ const NavItem = styled(motion.div)<{ isOpen: boolean }>`
   place-content: center;
   cursor: pointer;
 `
-
-export const navRoutes = [
-  {
-    title: "Home",
-    route: "/",
-  },
-  {
-    title: "Store",
-    route: "/store",
-  },
-  {
-    title: "Account",
-    route: "/account",
-  },
-]
 
 const Nav = () => {
   const { countryCode } = useParams({ strict: false }) as GlobalParams

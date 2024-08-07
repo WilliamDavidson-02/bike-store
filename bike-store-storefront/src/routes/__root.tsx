@@ -50,7 +50,7 @@ export const Route = createRootRoute({
 
       if (!data || !data.regions) throw notFound()
 
-      let regionMap = new Map<string, Region>()
+      const regionMap = new Map<string, Region>()
 
       // Create a map of country codes to regions.
       data.regions.forEach((region) => {

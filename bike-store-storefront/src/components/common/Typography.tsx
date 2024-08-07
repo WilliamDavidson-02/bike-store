@@ -10,7 +10,7 @@ type TypographyProps<T extends React.ElementType> = {
   css?: SerializedStyles
 } & React.ComponentPropsWithoutRef<T>
 
-export const typographyStyles: Record<TypographyVariants, SerializedStyles> = {
+const typographyStyles: Record<TypographyVariants, SerializedStyles> = {
   h1: css`
     font-weight: 300;
     font-size: 6rem;

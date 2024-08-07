@@ -2,13 +2,13 @@ import { FC } from "react"
 import { useEventListener } from "usehooks-ts"
 import styled from "@emotion/styled"
 import { AnimatePresence, motion } from "framer-motion"
-import { navRoutes } from "./Nav"
 import { Link, useParams } from "@tanstack/react-router"
 import { GlobalParams } from "src/types/global"
 import Typography from "@components/common/Typography"
 import Box from "@components/common/Box"
 import CountryList from "./CountryList"
 import { css, useTheme } from "@emotion/react"
+import { navRoutes } from "@lib/routes"
 
 const Aside = styled(motion.aside)`
   position: fixed;

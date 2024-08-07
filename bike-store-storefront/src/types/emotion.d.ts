@@ -1,5 +1,5 @@
 import "@emotion/react"
-import { globalTheme } from "../components/GlobalTheme"
+import { globalTheme } from "@lib/theme"
 
 type GlobalThemeType = typeof globalTheme
 

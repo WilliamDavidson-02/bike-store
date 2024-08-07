@@ -1,6 +1,5 @@
 import { ButtonHTMLAttributes, FC, ForwardedRef, forwardRef } from "react"
 import styled from "@emotion/styled"
-import { typographyStyles } from "./Typography"
 import { css, SerializedStyles } from "@emotion/react"
 import { Theme } from "@emotion/react"
 import Slot from "@components/Slot"
@@ -56,7 +55,10 @@ const StyledButton = styled.button<{
   css?: SerializedStyles
   variant: keyof typeof variantMap
 }>`
-  ${typographyStyles.button}
+  font-weight: 400;
+  font-size: 1.0625rem;
+  letter-spacing: -0.022em;
+  line-height: 1.176;
   padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xl3}`};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
 

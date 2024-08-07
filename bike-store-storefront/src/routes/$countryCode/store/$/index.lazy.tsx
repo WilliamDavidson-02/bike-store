@@ -26,7 +26,7 @@ export const StoreCategory = () => {
   const handle = _splat.split("/")[_splat.split("/").length - 1]
 
   const handlePageChange = (newPage: number) => {
-    let params = searchParams
+    const params = searchParams
     params.page = newPage
 
     navigate({

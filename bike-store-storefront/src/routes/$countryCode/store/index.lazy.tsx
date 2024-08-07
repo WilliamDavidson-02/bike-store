@@ -37,7 +37,7 @@ export const Store = () => {
   const page = getPageNumber(searchParams)
 
   const handlePageChange = (newPage: number) => {
-    let params = searchParams
+    const params = searchParams
     params.page = newPage
 
     navigate({
