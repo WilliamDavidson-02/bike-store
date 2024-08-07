@@ -1,8 +1,9 @@
 import { ButtonHTMLAttributes, FC, ForwardedRef, forwardRef } from "react"
 import styled from "@emotion/styled"
 import { typographyStyles } from "./Typography"
-import { css, SerializedStyles, useTheme } from "@emotion/react"
+import { css, SerializedStyles } from "@emotion/react"
 import { Theme } from "@emotion/react"
+import Slot from "@components/Slot"
 
 const variantMap = {
   interactive: (theme: Theme) => css`
@@ -53,7 +54,7 @@ const variantMap = {
 
 const StyledButton = styled.button<{
   css?: SerializedStyles
-  variant: SerializedStyles
+  variant: keyof typeof variantMap
 }>`
   ${typographyStyles.button}
   padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.xl3}`};
@@ -69,7 +70,7 @@ const StyledButton = styled.button<{
     cursor: default;
   }
 
-  ${({ variant }) => variant}
+  ${({ variant, theme }) => variantMap[variant](theme)}
   ${({ css }) => css}
 `
 
@@ -77,20 +78,19 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode
   variant?: keyof typeof variantMap
   css?: SerializedStyles
-  as?: React.ElementType<any, keyof React.JSX.IntrinsicElements>
+  asChild?: boolean
 }
 
 const Button: FC<ButtonProps> = forwardRef(
   (
-    { children, variant = "interactive", css, ...props },
+    { children, variant = "interactive", css, asChild = false, ...props },
     ref: ForwardedRef<HTMLButtonElement>,
   ) => {
-    const theme = useTheme()
-
     return (
       <StyledButton
+        as={asChild ? Slot : "button"}
         ref={ref}
-        variant={variantMap[variant](theme)}
+        variant={variant}
         css={css}
         {...props}
       >
