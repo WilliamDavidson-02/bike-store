@@ -1,8 +1,9 @@
 import Box from "@components/common/Box"
 import { css } from "@emotion/react"
 import { ChildCategory } from "@lib/data"
-import { Link } from "@tanstack/react-router"
-import { FC } from "react"
+import { Link, useParams } from "@tanstack/react-router"
+import React, { FC } from "react"
+import Breadcrumb, { BreadcrumbItem, BreadcrumbSeparator } from "./Breadcrumb"
 
 type CategoriesProps = {
   splat?: string
@@ -10,6 +11,8 @@ type CategoriesProps = {
 }
 
 const Categories: FC<CategoriesProps> = ({ childCategories, splat }) => {
+  const { _splat, countryCode } = useParams({ strict: false })
+
   const breadcrumbs = splat?.split("/").map((handle) => {
     const title = handle
       .split("-")
@@ -22,14 +25,41 @@ const Categories: FC<CategoriesProps> = ({ childCategories, splat }) => {
     return { handle, title }
   })
 
+  const getSplat = (handle: string) => {
+    const handleIndex = breadcrumbs?.findIndex((c) => c.handle === handle) ?? 0
+    const splat = breadcrumbs
+      ?.slice(0, handleIndex + 1)
+      .map((c) => c.handle)
+      .join("/")
+
+    return {
+      _splat: `/${splat ?? handle}`,
+    }
+  }
+
   return (
     <div>
-      <div>
-        <span>Store</span>
-        {breadcrumbs?.map((crumb) => (
-          <span key={crumb.handle}>/{crumb.title}</span>
+      <Breadcrumb>
+        <Link
+          to="/$countryCode/store"
+          params={{ countryCode: countryCode ?? "" }}
+        >
+          <BreadcrumbItem isPage={!_splat}>Store</BreadcrumbItem>
+        </Link>
+        {breadcrumbs?.map((crumb, i) => (
+          <React.Fragment key={crumb.handle}>
+            <BreadcrumbSeparator />
+            <Link
+              to="/$countryCode/store/$"
+              params={() => getSplat(crumb.handle)}
+            >
+              <BreadcrumbItem isPage={i === breadcrumbs.length - 1}>
+                {crumb.title}
+              </BreadcrumbItem>
+            </Link>
+          </React.Fragment>
         ))}
-      </div>
+      </Breadcrumb>
       <Box
         css={css`
           display: flex;
@@ -40,7 +70,7 @@ const Categories: FC<CategoriesProps> = ({ childCategories, splat }) => {
           <Link
             key={category.handle}
             to="/$countryCode/store/$"
-            params={{ _splat: `${splat}/${category.handle}` }}
+            params={{ _splat: `${splat ?? ""}/${category.handle}` }}
           >
             {category.name}
           </Link>
