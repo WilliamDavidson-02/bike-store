@@ -30,7 +30,7 @@ const StyledNav = styled.nav<{ isOpen: boolean }>`
   align-items: center;
   justify-content: ${({ isOpen }) => (isOpen ? "flex-end" : "flex-start")};
 
-  max-width: 1024px;
+  max-width: 1440px;
   width: 100%;
   height: 100%;
   margin: 0 auto;

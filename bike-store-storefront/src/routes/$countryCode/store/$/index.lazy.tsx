@@ -11,6 +11,7 @@ import { SearchParams } from "src/types/global"
 import { ProductList } from "../index.lazy"
 import { getPageNumber } from "@lib/utils"
 import Categories from "@components/store/Categories"
+import RefinementList from "@components/store/RefinementList"
 
 const PRODUCT_LIMIT = 50
 
@@ -46,6 +47,7 @@ export const StoreCategory = () => {
   return (
     <>
       <Categories splat={_splat} childCategories={childCategories} />
+      <RefinementList />
       <ProductList>
         {products.map((product) => (
           <ProductPreview

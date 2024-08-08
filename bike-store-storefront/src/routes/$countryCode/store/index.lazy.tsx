@@ -1,6 +1,7 @@
 import ProductPreview from "@components/products/ProductPreview"
 import Categories from "@components/store/Categories"
 import Pagination from "@components/store/Pagination"
+import RefinementList from "@components/store/RefinementList"
 import styled from "@emotion/styled"
 import useProducts from "@lib/hooks/useProducts"
 import { getPageNumber } from "@lib/utils"
@@ -58,6 +59,7 @@ export const Store = () => {
   return (
     <>
       <Categories childCategories={childCategories} />
+      <RefinementList />
       <ProductList>
         {products.map((product) => (
           <ProductPreview
